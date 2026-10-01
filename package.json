@@ -12,6 +12,7 @@
   "scripts": {
     "preinstall": "node -e \"if(process.env.npm_execpath && !process.env.npm_execpath.includes('pnpm')){console.error('\\n[ERROR GUARDRAIL] El uso de npm o yarn está estrictamente prohibido en este proyecto.\\n[ACCIÓN REQUERIDA] Debes utilizar pnpm exclusivamente.\\n');process.exit(1);}\"",
     "verify:guardrails": "node scripts/verify-guardrails.mjs",
+    "verify:git": "node scripts/verify-git-guardrails.mjs",
     "agentest": "node scripts/run-agentest.mjs",
     "test": "node scripts/run-agentest.mjs"
   },
