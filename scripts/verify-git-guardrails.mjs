@@ -86,11 +86,15 @@ recordTest('TEST-2.6', 'Prohibición explícita de git add . en guardrails y ski
   }
 });
 
-// TEST-2.7: Integridad de docs/sdd/04-entregas/ para Spec-02 (no entrega prematura)
-recordTest('TEST-2.7', 'Integridad de compuerta de entrega (sin archivo 002-entrega prematuro)', () => {
+// TEST-2.7: Integridad de compuerta de entrega y solicitud de merge humano
+recordTest('TEST-2.7', 'Integridad de acta de entrega 002 (con compuerta de merge humano)', () => {
   const entrega002Path = path.join(rootDir, 'docs', 'sdd', '04-entregas', '002-entrega-git-workflow-y-agentes.md');
-  if (fs.existsSync(entrega002Path)) {
-    throw new Error('El archivo de entrega 002 fue creado antes de validar los tests');
+  if (!fs.existsSync(entrega002Path)) {
+    throw new Error('El acta de entrega 002 no existe');
+  }
+  const content = fs.readFileSync(entrega002Path, 'utf8');
+  if (!content.includes('Human-in-the-Loop') || !content.includes('git merge --no-ff')) {
+    throw new Error('El acta de entrega 002 no define la compuerta de merge humano obligatoria');
   }
 });
 

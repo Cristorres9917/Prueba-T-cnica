@@ -100,12 +100,24 @@ assertTest('TEST-07', 'Taxonomía completa de fases SDD (00 a 03)', () => {
   }
 });
 
-// TEST-08: Puerta de Entrega sin documentos prematuros
-assertTest('TEST-08', 'Integridad de docs/sdd/04-entregas/ (sin entregas prematuras)', () => {
+// TEST-08: Puerta de Entrega y correspondencia formal
+assertTest('TEST-08', 'Integridad de docs/sdd/04-entregas/ (correspondencia formal con specs)', () => {
   const dir = path.join(rootDir, 'docs/sdd/04-entregas');
   const files = fs.readdirSync(dir).filter(f => f.endsWith('.md'));
-  if (files.length > 0) {
-    throw new Error(`Existe una entrega no autorizada: ${files.join(', ')}`);
+  if (files.length === 0) {
+    throw new Error('No se encontraron actas de entrega');
+  }
+  for (const file of files) {
+    const match = file.match(/^([0-9]{3})-entrega/);
+    if (!match) {
+      throw new Error(`Archivo ${file} no cumple formato XXX-entrega-*.md`);
+    }
+    const specNum = match[1];
+    const specExists = fs.readdirSync(path.join(rootDir, 'docs/sdd/01-specs')).some(f => f.startsWith(`${specNum}-spec`));
+    const testExists = fs.readdirSync(path.join(rootDir, 'docs/sdd/03-agentest')).some(f => f.startsWith(`${specNum}-agentest`));
+    if (!specExists || !testExists) {
+      throw new Error(`Entrega ${file} no cuenta con Spec o Agentest asociado`);
+    }
   }
 });
 
