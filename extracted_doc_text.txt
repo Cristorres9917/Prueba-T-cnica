@@ -1,0 +1,30 @@
+PRUEBA ANALISTA DE IMPLEMENTACIÓN PLACETOPAY
+El propósito de la prueba es medir tus conocimientos y habilidades técnicas en desarrollo, consumiendo los servicios expuestos y utilizando información relevante de la documentación proporcionada. Se espera que concluyas y comuniques de manera asertiva a los clientes los resultados obtenidos.
+Para el desarrollo de la prueba, puedes emplear cualquier herramienta (PHP, JAVA, C#, Postman, entre otros) y cualquier tipo de modelado o técnica.
+Datos necesarios para la integración:
+Documentación WebCheckout: https://docs.placetopay.dev/checkout
+Documentación API Gateway:  https://docs.placetopay.dev/gateway/
+Credenciales de acceso a los servicios:
+Login: 2d9eaf1e662518756a3d78806543af5b
+SecretKey: 3YC5brb5eAR4xBGQ
+URL Base del servicio o endpoint: 
+Webcheckout: https://checkout-test.placetopay.com/
+API gateway: https://api-test.placetopay.com/rest
+Con la información proporcionada, por favor realiza la integración con Placetopay utilizando un flujo de pago básico. Crea una tienda y genera un carrito de compras o formulario de pagos donde se pueden realizar un flujo de pago, documenta el código fuente utilizado para consumir nuestras APIs y suministra la información mínima necesaria para llevar a cabo el proceso transaccional (revisa los parámetros de entrada del servicio). Compartirnos la siguiente información:
+Asegúrate de compartir las evidencias que demuestren el resultado final del flujo transaccional (aprobado, pendiente y rechazado).
+Recurso de la tienda creada en Github.
+Evidencia de como se realizaron las peticiones a nuestro servicio.
+Basado en la documentación previamente indicada, responde las siguientes preguntas sobre conceptos:
+¿Qué es el RequestId, para qué sirve y en qué casos se repite?
+¿Cuáles son los estados de una transacción? Explica el significado de cada uno de ellos.
+¿Qué es una preautorización y cómo funcionaría para un comercio? Proporciona un ejemplo.
+Explica las diferencias entre cobro por suscripción y cobro por recurrencia.
+Cual es la diferencia entre API Gateway y Webcheckout.
+Para que se usa la dispersión en un comercio.
+¿Para qué sirve la notificación?
+En este espacio expondremos algunos casos que requieren atención de tu parte como analista de implementaciones. Por favor, indica qué gestión y manejo le darías al comercio, adicional a esto por favor redacta la respuesta que le brindarías al cliente en cada uno de estos casos:
+Desde ayer, nuestras transacciones no han podido generarse debido a un mensaje de error que aparece en el servicio: "Autenticación fallida 102". El cliente es un comercio de gran importancia para la compañía y desea cancelar el servicio debido a los inconvenientes presentados.
+Desde las 7 de la mañana de hoy, el comercio CLARO no ha podido realizar transacciones. Nos indican que están viendo el error "Autenticación mal formada", lo cual está afectando significativamente a los usuarios finales y a la reputación del comercio.
+Estás trabajando en un proyecto con el comercio "Sunshine". A pesar de haber explicado el funcionamiento del servicio y los procesos necesarios para implementar el servicio en múltiples ocasiones y de diversas maneras, el comercio sigue mostrando confusión y dificultad para entender. Aunque no se muestra molesto, expresa su frustración y sugiere que busques nuevas formas de explicarle, ya que necesita una comprensión clara para avanzar en el proyecto. 
+En el mismo proyecto con el comercio "Sunshine", la situación ha escalado de manera diferente. A pesar de tus esfuerzos por explicar el servicio y los procesos de integración, el comercio se muestra extremadamente molesto y utiliza un tono grosero para expresar su frustración. Te dice que no estás cumpliendo con sus expectativas y que considera que no eres competente para tu trabajo. Además, menciona que, debido a la falta de entendimiento y atención por tu parte, está considerando cancelar el servicio, a pesar de que su negocio representa una gran oportunidad de ingresos para nuestra compañía.
+Realiza un diagrama de flujo del proceso de pago (Usuario Final - Comercio - Placetopay), entendiendo la documentación del punto inicial tanto para API Gateway como para Webcheckout.
