@@ -1,0 +1,8 @@
+# ==============================================================================
+# PNPM WORKSPACE CONFIGURATION
+# ==============================================================================
+# Cooldown de 48 horas (2880 minutos) a nivel workspace
+minimumReleaseAge: 2880
+
+packages:
+  - '.'

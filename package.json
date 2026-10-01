@@ -1,0 +1,29 @@
+{
+  "name": "prueba-tecnica-placetopay-sdd",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Implementación SDD para integración Placetopay WebCheckout y API Gateway con arnés Antigravity",
+  "type": "module",
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=10.0.0",
+    "npm": "please-use-pnpm"
+  },
+  "scripts": {
+    "preinstall": "node -e \"if(process.env.npm_execpath && !process.env.npm_execpath.includes('pnpm')){console.error('\\n[ERROR GUARDRAIL] El uso de npm o yarn está estrictamente prohibido en este proyecto.\\n[ACCIÓN REQUERIDA] Debes utilizar pnpm exclusivamente.\\n');process.exit(1);}\"",
+    "verify:guardrails": "node scripts/verify-guardrails.mjs",
+    "agentest": "node scripts/run-agentest.mjs",
+    "test": "node scripts/run-agentest.mjs"
+  },
+  "keywords": [
+    "sdd",
+    "anthropic",
+    "antigravity",
+    "placetopay",
+    "webcheckout",
+    "api-gateway",
+    "sqlite"
+  ],
+  "author": "Evertec / Placetopay Candidate",
+  "license": "UNLICENSED"
+}
