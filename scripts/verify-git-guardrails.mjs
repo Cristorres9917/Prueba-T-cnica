@@ -21,23 +21,30 @@ function recordTest(id, name, fn) {
   }
 }
 
-// TEST-2.1: Rama actual no es main
-recordTest('TEST-2.1', 'Aislamiento de rama (rama actual distinta de main)', () => {
+// TEST-2.1: Aislamiento de rama por Spec
+recordTest('TEST-2.1', 'Aislamiento de rama (desarrollo en rama feat/spec o main post-merge)', () => {
   const currentBranch = execSync('git rev-parse --abbrev-ref HEAD', { encoding: 'utf8' }).trim();
   if (currentBranch === 'main') {
-    throw new Error('El desarrollo está ocurriendo directamente en main');
-  }
-  if (!currentBranch.startsWith('feat/spec-') && !currentBranch.startsWith('fix/spec-')) {
-    throw new Error(`Nombre de rama no estándar: ${currentBranch}`);
+    // En main solo es válido si no hay cambios pendientes de desarrollo
+    const status = execSync('git status --porcelain', { encoding: 'utf8' }).trim();
+    if (status.length > 0) {
+      throw new Error('Hay cambios sin confirmar directamente en main. Debe usarse una rama feat/spec-XXX');
+    }
+  } else {
+    if (!currentBranch.startsWith('feat/spec-') && !currentBranch.startsWith('fix/spec-') && !currentBranch.startsWith('chore/spec-') && !currentBranch.startsWith('docs/spec-')) {
+      throw new Error(`Nombre de rama no estándar: ${currentBranch}`);
+    }
   }
 });
 
 // TEST-2.2: Regex de nomenclatura de rama
 recordTest('TEST-2.2', 'Validación de nomenclatura regex de ramas por spec', () => {
   const currentBranch = execSync('git rev-parse --abbrev-ref HEAD', { encoding: 'utf8' }).trim();
-  const specRegex = /^(feat|fix|chore|docs)\/spec-[0-9]{3}-[a-z0-9-]+$/;
-  if (!specRegex.test(currentBranch)) {
-    throw new Error(`La rama '${currentBranch}' no cumple con el patrón regex ^(feat|fix|chore|docs)\\/spec-[0-9]{3}-[a-z0-9-]+$`);
+  if (currentBranch !== 'main') {
+    const specRegex = /^(feat|fix|chore|docs)\/spec-[0-9]{3}-[a-z0-9-]+$/;
+    if (!specRegex.test(currentBranch)) {
+      throw new Error(`La rama '${currentBranch}' no cumple con el patrón regex ^(feat|fix|chore|docs)\\/spec-[0-9]{3}-[a-z0-9-]+$`);
+    }
   }
 });
 
@@ -86,15 +93,21 @@ recordTest('TEST-2.6', 'Prohibición explícita de git add . en guardrails y ski
   }
 });
 
-// TEST-2.7: Integridad de compuerta de entrega y solicitud de merge humano
-recordTest('TEST-2.7', 'Integridad de acta de entrega 002 (con compuerta de merge humano)', () => {
-  const entrega002Path = path.join(rootDir, 'docs', 'sdd', '04-entregas', '002-entrega-git-workflow-y-agentes.md');
-  if (!fs.existsSync(entrega002Path)) {
-    throw new Error('El acta de entrega 002 no existe');
+// TEST-2.7: Integridad de compuertas de entrega y solicitud de merge humano
+recordTest('TEST-2.7', 'Integridad de actas de entrega (con compuerta de merge humano en cada spec)', () => {
+  const entregasDir = path.join(rootDir, 'docs', 'sdd', '04-entregas');
+  const files = fs.readdirSync(entregasDir).filter(f => f.endsWith('.md'));
+  if (files.length === 0) {
+    throw new Error('No se encontraron actas de entrega');
   }
-  const content = fs.readFileSync(entrega002Path, 'utf8');
-  if (!content.includes('Human-in-the-Loop') || !content.includes('git merge --no-ff')) {
-    throw new Error('El acta de entrega 002 no define la compuerta de merge humano obligatoria');
+  for (const file of files) {
+    // A partir del Spec-02, toda entrega debe incluir formalmente la compuerta humana
+    if (!file.startsWith('001-')) {
+      const content = fs.readFileSync(path.join(entregasDir, file), 'utf8');
+      if (!content.includes('Human-in-the-Loop') || !content.includes('git merge --no-ff')) {
+        throw new Error(`El acta ${file} no define la compuerta de merge humano obligatoria`);
+      }
+    }
   }
 });
 
