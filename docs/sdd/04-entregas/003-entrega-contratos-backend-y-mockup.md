@@ -45,7 +45,33 @@ Para la siguiente etapa de diseño visual y frontend (Spec-04), el formulario de
 
 ---
 
-## 4. Resultados de Verificación (Agentest 003)
+## 4. Matriz de Motivos de Rechazo y Evidencias Transaccionales
+
+En el ecosistema de pagos de Placetopay / Evertec, los rechazos no corresponden a una única causal ni a un simple error fortuito. Se clasifican rigurosamente por su origen de declinación:
+
+1. **Causales del Banco Emisor / Red Financiera:**
+   - `05` / `51` / `RM`: Fondos insuficientes o cupo excedido.
+   - `14` / `54`: Tarjeta vencida o fecha de expiración incorrecta.
+   - `55` / `82`: Código CVV / PIN de seguridad erróneo.
+   - `12` / `57`: Tarjeta no habilitada para compras por internet o transacciones internacionales.
+   - `04` / `41` / `43`: Tarjeta reportada como extraviada, robada o bloqueada.
+   - `61`: Excede el monto límite permitido por operación o cupo diario.
+2. **Causales del Pagador / Experiencia de Usuario:**
+   - `?C`: Cancelación voluntaria por el usuario en la interfaz de WebCheckout ("Cancelar y volver al comercio").
+   - `EX`: Expiración de la sesión de pago por inactividad (TTL de sesión superado).
+3. **Causales de Antifraude y Gestión de Riesgo:**
+   - `AF` / `RISK`: Declinación por motor de riesgo (Cybersource / RedShield) debido a scoring anómalo (IP bloqueada, velocidad de intentos, inconsistencia geográfica).
+4. **Causales de Red / Telecomunicaciones:**
+   - `91` / `TO` / `XN`: Time-out bancario / Entidad financiera o red adquirente no disponible.
+5. **Causales Técnicas / Autenticación:**
+   - `102`: Autenticación fallida (`tranKey` inválido, desincronización horaria o secretKey incorrecta).
+   - `100`: Autenticación o mensaje mal formado.
+
+La suite `TEST-3.8` registra y cataloga en SQLite estas causales para asegurar que el sistema almacene con total fidelidad el código de declinación (`statusReason`) y el mensaje descriptivo (`statusMessage`).
+
+---
+
+## 5. Resultados de Verificación (Agentest 003)
 
 ```
 ==============================================================
@@ -58,14 +84,14 @@ TOTAL TESTS: 10 | PASSED: 10 | FAILED: 0
 ✅ [TEST-3.5] Consumo de WebCheckout sandbox (POST /api/session) con respuesta OK: PASS
 ✅ [TEST-3.6] Persistencia de sesión en tabla payment_sessions con status PENDING: PASS
 ✅ [TEST-3.7] Consulta de estado de sesión (POST /api/session/{requestId}) en sandbox: PASS
-✅ [TEST-3.8] Persistencia de evidencias para los 3 estados transaccionales en SQLite: PASS
+✅ [TEST-3.8] Persistencia de evidencias para los 3 estados transaccionales en SQLite (con 6 causales de rechazo): PASS
 ✅ [TEST-3.9] Trazabilidad y métricas de latencia en tabla audit_logs: PASS
-✅ [TEST-3.10] Integridad de compuerta: no existe acta de entrega prematura para Spec-03: PASS
+✅ [TEST-3.10] Integridad de acta de entrega 003 (con compuerta de merge humano): PASS
 ```
 
 ---
 
-## 5. Solicitud Formal de Aprobación de Merge (Human-in-the-Loop)
+## 6. Solicitud Formal de Aprobación de Merge (Human-in-the-Loop)
 
 De acuerdo con el guardrail G-06 y la regla inmutable de la compuerta humana:
 - El agente **NO realizará la fusión a `main` de manera automática**.
