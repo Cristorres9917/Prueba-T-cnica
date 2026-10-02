@@ -37,14 +37,13 @@ stateDiagram-v2
 ```
 
 1. **`APPROVED` (Aprobada / Estado `OK` o `00`):**
-   - **Significado:** La transacción fue procesada y autorizada exitosamente por las redes procesadoras (franquicias) y el banco emisor. Los fondos han sido debitados (o autorizados) de la cuenta del tarjetahabiente y transferidos/abonados a la cuenta recaudadora del comercio.
-   - **Campos asociados:** Retorna un `authorization` (código de autorización bancario) y un `receipt` (número de recibo/comprobante oficial).
-2. **`PENDING` (Pendiente / Razón `PC`):**
+   - **Significado:** La transacción fue procesada y autorizada exitosamente por las redes procesadoras (franquicias) y el banco emisor. Los fondos han sido debitados (o autorizados) de la cuenta del tarjetahabiente y transferidos/abonados a la cuenta recaudadora del comercio.   
+2. **`PENDING` (Pendiente):**
    - **Significado:** La transacción se encuentra en espera de confirmación. Ocurre en dos escenarios:
      - En WebCheckout: La sesión fue creada y se encuentra activa a la espera de que el usuario final ingrese sus credenciales bancarias o complete el formulario.
      - En medios de pago asíncronos (PSE, transferencias bancarias, corresponsales bancarios como Efecty o Baloto): La solicitud fue enviada pero el banco o la entidad recaudadora no ha confirmado aún la liquidación del dinero.
    - **Acción requerida:** El comercio debe mantener el pedido en espera sin despachar y consultar el estado periódicamente o aguardar la notificación asíncrona (webhook).
-3. **`REJECTED` (Rechazada / Razón `XA`, `51`, `05`, `91`, etc.):**
+3. **`REJECTED` (Rechazada):**
    - **Significado:** La transacción fue declinada por el banco emisor, por las redes financieras o por las reglas del motor anti-fraude de Placetopay.
    - **Causales comunes:** Fondos insuficientes (`XA` o causal `51`), tarjeta bloqueada/robada (`05`), CVV incorrecto, fecha de vencimiento errónea, límite diario superado o tarjeta no habilitada para compras internacionales por internet.
 4. **`FAILED` / `ERROR`:**
@@ -55,7 +54,7 @@ stateDiagram-v2
 
 ### Pregunta 3: ¿Qué es una preautorización y cómo funcionaría para un comercio? Proporciona un ejemplo.
 - **Concepto:**
-  Una **preautorización** (o *Hold* de fondos) es una operación transaccional donde el comercio solicita al banco emisor verificar la validez de la tarjeta y **bloquear/reservar temporalmente** un monto específico del cupo del cliente, **sin realizar la captura ni el débito contable inmediato** del dinero. Posteriormente, el comercio puede ejecutar una operación de **Captura** (`Capture`) por el valor final real o una **Cancelación/Liberación** (`Void`/`Release`) si el servicio no se prestó.
+  Una **preautorización** es una operación transaccional donde el comercio solicita al banco emisor verificar la validez de la tarjeta y **bloquear/reservar temporalmente** un monto específico del cupo del cliente, **sin realizar la captura ni el débito contable inmediato** del dinero. Posteriormente, el comercio puede ejecutar una operación de **Captura** (`Capture`) por el valor final real o una **Cancelación/Liberación** (`Void`/`Release`) si el servicio no se prestó.
 - **Beneficio para el comercio:**
   Garantiza la disponibilidad de los fondos con antelación, eliminando el riesgo de "fondos insuficientes" al momento del cobro final, y evita cobros y reembolsos innecesarios si el importe final varía.
 - **Ejemplo Práctico en la Industria: Empresa de Alquiler de Vehículos (Rent-A-Car):**
@@ -68,13 +67,7 @@ stateDiagram-v2
 
 ### Pregunta 4: Explica las diferencias entre cobro por suscripción y cobro por recurrencia.
 
-| Criterio | Cobro por Suscripción | Cobro por Recurrencia |
-| :--- | :--- | :--- |
-| **Definición** | Modelo de cobro periódico automático donde el valor y la frecuencia temporal son **fijos y predeterminados** contractualmente. | Modelo donde el comercio almacena de forma segura un token de pago del cliente para realizar cobros automáticos posteriores según el **consumo variable o demanda**. |
-| **Monto Cobrado** | **Fijo e invariable** en cada ciclo de facturación (salvo previo aviso contractual). | **Variable o dinámico**, dependiendo de métricas de uso, consumo o compras adicionales. |
-| **Periodicidad** | Calendarizada estrictamente (ej. mensual el día 1, trimestral, anual). | A demanda o por corte de consumo (ej. al finalizar un viaje, al superar un umbral de uso). |
-| **Mecanismo Placetopay** | Se gestiona mediante el módulo de `Subscription` / planes automáticos en Placetopay. | Se gestiona mediante `Tokenización` (Token / Instrumento de pago registrado) invocado a demanda vía API Gateway. |
-| **Ejemplos del Mundo Real** | - Planes de streaming (Netflix, Spotify).<br>- Gimnasio mensual ($90.000 COP fijos al mes).<br>- Licencia SaaS fija (Microsoft 365). | - Servicios públicos (electricidad/agua, donde el monto cambia según el consumo mensual).<br>- Aplicaciones de movilidad (Uber, DiDi, cobro según kilometraje).<br>- Servicios en la nube (AWS/Azure según horas de cómputo utilizadas). |
+La diferencia principal entre estos dos métodos de pago automático radica en la flexibilidad frente a la rutina. En el primer modelo, el cobro es fijo y predecible, funcionando exactamente como tu suscripción de Netflix o del gimnasio: sabes de antemano el día exacto de pago y la cantidad acordada. En contraste, el segundo modelo es totalmente a demanda, operando como las aplicaciones de transporte o de comida a domicilio; el negocio guarda tu tarjeta de forma segura para cobrarte únicamente lo que consumes, justo en el momento en que lo usas, adaptando el valor y la frecuencia a tu ritmo de vida sin atarte a cuotas inamovibles.
 
 ---
 
