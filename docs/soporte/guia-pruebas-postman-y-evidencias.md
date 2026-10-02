@@ -5,14 +5,7 @@
 **Colección de Postman:** [`postman_collection.json`](../../postman_collection.json)  
 **Carpeta de Capturas:** [`Evidencias fotograficas/`](../../Evidencias%20fotograficas/)  
 
----
 
-## 💡 ¿De qué se trata esta guía? (En palabras simples)
-Para demostrar que nuestra integración funciona en la vida real, ejecutamos una batería de pruebas directamente en **Postman** consumiendo los servidores de prueba (*Sandbox*) de **Placetopay**. 
-
-Gracias al **Pre-request Script** que dejamos programado en la colección, Postman calcula en cada clic las contraseñas criptográficas seguras (`tranKey`, `seed` y `nonce`) en Base64/SHA-256. Así no tuvimos que calcular hashes a mano y pudimos probar los flujos reales de pago en segundos.
-
-A continuación te explicamos de forma breve, humana y sin rodeos cada una de las **6 APIs probadas**, junto a su captura fotográfica correspondiente.
 
 ---
 
