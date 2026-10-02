@@ -14,6 +14,8 @@
     "verify:guardrails": "node scripts/verify-guardrails.mjs",
     "verify:git": "node scripts/verify-git-guardrails.mjs",
     "test:spec3": "node scripts/test-placetopay-contracts.mjs",
+    "test:spec4": "node scripts/test-frontend-a11y-seo.mjs",
+    "start": "node src/server.js",
     "agentest": "node scripts/run-agentest.mjs",
     "test": "node scripts/run-agentest.mjs"
   },

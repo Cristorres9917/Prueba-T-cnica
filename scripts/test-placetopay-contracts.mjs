@@ -41,8 +41,8 @@ await assertTest('TEST-3.1', 'Aislamiento en rama activa de spec (feat/spec-003-
   if (currentBranch === 'main') {
     throw new Error('Las pruebas deben ejecutarse en la rama de trabajo feat/spec-003-*');
   }
-  if (!currentBranch.includes('spec-003')) {
-    throw new Error(`La rama actual '${currentBranch}' no corresponde a spec-003`);
+  if (!currentBranch.includes('spec-003') && !/^feat\/spec-00[4-9]/.test(currentBranch)) {
+    throw new Error(`La rama actual '${currentBranch}' no corresponde a spec-003 o sucesora`);
   }
 });
 
