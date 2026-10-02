@@ -97,6 +97,17 @@ Este documento recopila las lecciones aprendidas, patrones arquitectónicos cons
   - *Contexto:* Al evaluar pasarelas en entornos sandbox, los evaluadores y desarrolladores pierden tiempo buscando tarjetas de prueba en la documentación externa para probar cada estado (aprobado, rechazado, fondos insuficientes, 3DS).
   - *Aprendizaje:* Integrar un modal accesible (`#test-cards-modal`) directamente en la tienda virtual con copiado al portapapeles en 1 clic eleva drásticamente la Developer Experience (DX), facilitando una validación instantánea e intuitiva de todos los caminos transaccionales.
 
+---
+
+## 10. Automatización de Pruebas de API y Evidencias Visuales (Spec-08)
+- **Lección 22: Automatización Criptográfica en Postman con `CryptoJS`.**
+  - *Contexto:* En pasarelas de pago con esquemas de autenticación dinámicos (`seed`, `nonce`, `tranKey`), los desarrolladores suelen sufrir probando en herramientas GUI como Postman al tener que regenerar hashes manuales en cada intento.
+  - *Aprendizaje:* Implementar Pre-request Scripts a nivel de carpeta en Postman utilizando la librería nativa `CryptoJS` permite concatenar WordArrays y computar SHA-256 en Base64 en milisegundos, ofreciendo una experiencia *"Zero Friction"* donde cualquier evaluador solo debe hacer clic en *"Send"*.
+- **Lección 23: Trazabilidad Fotográfica y Documentación Humanizada en Certificaciones.**
+  - *Contexto:* Presentar únicamente colecciones JSON o logs en texto plano puede resultar árido para auditorías o revisiones interdisciplinarias donde participan perfiles no técnicos.
+  - *Aprendizaje:* Acompañar cada endpoint con un relato conciso y humanizado ("¿Qué hace?", "¿Cómo se probó?", "¿Qué respondió?") junto con capturas fotográficas reales de la herramienta de pruebas genera convicción inmediata y transparencia total sobre la estabilidad de la integración.
+
+
 
 
 
