@@ -38,3 +38,13 @@ Este documento recopila las lecciones aprendidas, patrones arquitectónicos cons
 - **Lección 7: Compuerta de Aprobación Humana (Merge Gate).**
   - *Contexto:* Los agentes autónomos no deben realizar fusiones unilaterales a `main` sin verificación de los tomadores de decisión humanos.
   - *Aprendizaje:* Aislar cada spec en ramas `feat/spec-XXX-<slug>` y exigir la validación de los Agentests antes de que el usuario humano autorice y ejecute el `git merge` garantiza la máxima seguridad operativa en SDD.
+
+---
+
+## 5. Arquitectura Transaccional y Contratos del Mockup MVP (Spec-03)
+- **Lección 8: Persistencia Nativa con Node.js 24 (`node:sqlite`).**
+  - *Contexto:* Las librerías de SQLite tradicionales (`better-sqlite3`, `sqlite3`) requieren compilación binaria nativa (node-gyp, python, vs-build-tools), lo que genera fricciones en entornos Windows y riesgos de cuarentena de paquetes.
+  - *Aprendizaje:* Node.js v24 incorpora `node:sqlite` (`DatabaseSync`), permitiendo ejecutar SQLite de manera estándar, síncrona y con rendimiento nativo, con cero dependencias externas de npm y cumpliendo al 100% los guardrails.
+- **Lección 9: Desacoplamiento de Contratos de Datos para el Mockup MVP.**
+  - *Contexto:* Para construir el mockup y carrito de compras sin sorpresas de integración, el frontend debe conocer con precisión los requerimientos de Placetopay.
+  - *Aprendizaje:* Formalizar un diccionario de datos (`buyer`, `payment`, `channel`, `card`) y un validador estricto asegura que cuando se construya el mockup visual (Spec-04), todos los payloads hacia WebCheckout y API Gateway sean 100% compatibles desde el primer intento.
