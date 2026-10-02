@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>Evertec PayShop — Integración Oficial Placetopay</title>
+  <meta name="description" content="Tienda virtual y pasarela de pagos integrada con Evertec Placetopay. Demostración interactiva de WebCheckout, API Gateway y persistencia SQLite bajo cultura SDD.">
+  <meta name="author" content="Evertec / Placetopay Candidate">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="http://localhost:3000/">
+
+  <!-- OpenGraph Metadata -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Evertec PayShop — Pasarela de Pagos Placetopay">
+  <meta property="og:description" content="Demostración interactiva de integración WebCheckout y API Gateway con persistencia relacional SQLite y diseño accesible WCAG 2.1 AA.">
+  <meta property="og:image" content="https://www.evertecinc.com/wp-content/themes/evertec/images/logo.png">
+  <meta property="og:url" content="http://localhost:3000/">
+  <meta property="og:site_name" content="Evertec Placetopay Store">
+  <meta property="og:locale" content="es_CO">
+
+  <!-- Twitter Card Metadata -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Evertec PayShop — Integración Placetopay">
+  <meta name="twitter:description" content="E-Commerce interactivo con checkout de pagos Placetopay (Evertec) y auditoría SQLite.">
+  <meta name="twitter:image" content="https://www.evertecinc.com/wp-content/themes/evertec/images/logo.png">
+
+  <!-- Favicon SVG -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230B192C'/><path d='M25 50 L50 25 L75 50 L50 75 Z' fill='%23FF5900'/><circle cx='50' cy='50' r='12' fill='%23FFFFFF'/></svg>">
+
+  <!-- Estilos y Design System Evertec -->
+  <link rel="stylesheet" href="/styles.css">
+
+  <!-- Marcado Estructurado JSON-LD (Schema.org) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "name": "Evertec / Placetopay",
+        "url": "https://www.evertecinc.com",
+        "logo": "https://www.evertecinc.com/wp-content/themes/evertec/images/logo.png",
+        "description": "Líder en procesamiento de transacciones financieras y tecnología para medios de pago en América Latina."
+      },
+      {
+        "@type": "ItemList",
+        "name": "Catálogo de Soluciones Tecnológicas Evertec",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "item": {
+              "@type": "Product",
+              "name": "Terminal POS Evertec SmartPay Pro",
+              "description": "Terminal inteligente de procesamiento de tarjetas de crédito y débito con pantalla táctil e impresora térmica de alta velocidad.",
+              "sku": "EVT-POS-001",
+              "offers": {
+                "@type": "Offer",
+                "price": "350000",
+                "priceCurrency": "COP",
+                "availability": "https://schema.org/InStock"
+              }
+            }
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "item": {
+              "@type": "Product",
+              "name": "Lector PinPad Mobile Evertec Contactless",
+              "description": "Dispositivo ultra-portátil Bluetooth para cobros rápidos con tecnología chip y sin contacto (NFC).",
+              "sku": "EVT-PIN-002",
+              "offers": {
+                "@type": "Offer",
+                "price": "180000",
+                "priceCurrency": "COP",
+                "availability": "https://schema.org/InStock"
+              }
+            }
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "item": {
+              "@type": "Product",
+              "name": "Gateway E-Commerce Token Pro (Licencia Anual)",
+              "description": "Integración API Gateway con tokenización segura, módulo antifraude Cybersource y recurrencia automatizada.",
+              "sku": "EVT-GTW-003",
+              "offers": {
+                "@type": "Offer",
+                "price": "520000",
+                "priceCurrency": "COP",
+                "availability": "https://schema.org/InStock"
+              }
+            }
+          },
+          {
+            "@type": "ListItem",
+            "position": 4,
+            "item": {
+              "@type": "Product",
+              "name": "Dispositivo Biométrico de Seguridad Financiera",
+              "description": "Lector biométrico de huella dactilar certificado para autenticación reforzada y prevención de fraude en transacciones.",
+              "sku": "EVT-BIO-004",
+              "offers": {
+                "@type": "Offer",
+                "price": "290000",
+                "priceCurrency": "COP",
+                "availability": "https://schema.org/InStock"
+              }
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <!-- Enlace accesible de salto al contenido -->
+  <a href="#content" class="skip-link">Saltar al contenido principal</a>
+
+  <!-- Header Institucional Evertec -->
+  <header class="app-header" role="banner">
+    <div class="header-container">
+      <div class="brand-group">
+        <div class="brand-logo" aria-hidden="true">
+          <svg width="38" height="38" viewBox="0 0 100 100">
+            <rect width="100" height="100" rx="20" fill="#0B192C"/>
+            <path d="M25 50 L50 25 L75 50 L50 75 Z" fill="#FF5900"/>
+            <circle cx="50" cy="50" r="12" fill="#FFFFFF"/>
+          </svg>
+        </div>
+        <div class="brand-texts">
+          <span class="brand-title">EVERTEC <span class="brand-highlight">PayShop</span></span>
+          <span class="brand-subtitle">Powered by Placetopay WebCheckout & API Gateway</span>
+        </div>
+      </div>
+
+      <nav class="app-nav" aria-label="Navegación principal">
+        <ul class="nav-list">
+          <li><a href="#catalog-section" class="nav-link">Catálogo</a></li>
+          <li><a href="#checkout-section" class="nav-link">Checkout</a></li>
+          <li><a href="#evidences-section" class="nav-link">Evidencias Transaccionales</a></li>
+        </ul>
+      </nav>
+
+      <div class="header-actions">
+        <button id="cart-toggle-btn" class="cart-btn" aria-label="Abrir carrito de compras. 0 productos añadidos" aria-haspopup="dialog" aria-expanded="false">
+          <svg class="cart-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <circle cx="9" cy="21" r="1"></circle>
+            <circle cx="20" cy="21" r="1"></circle>
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+          </svg>
+          <span class="cart-text">Carrito</span>
+          <span id="cart-badge" class="cart-badge" aria-hidden="true">0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Contenido Principal -->
+  <main id="content" class="main-container" tabindex="-1">
+    
+    <!-- Hero Banner -->
+    <section class="hero-banner" aria-labelledby="hero-title">
+      <div class="hero-content">
+        <span class="hero-tag">INNOVACIÓN FINANCIERA EVERTEC</span>
+        <h1 id="hero-title" class="hero-title">Evertec PayShop — Integración Oficial Placetopay</h1>
+        <p class="hero-desc">
+          Plataforma de comercio electrónico de demostración diseñada bajo metodología <strong>Spec-Driven Development (SDD)</strong>. 
+          Experimenta el flujo de pagos completo con <strong>Placetopay WebCheckout</strong> y <strong>API Gateway Directo</strong>, 
+          respaldado por persistencia relacional en <strong>SQLite</strong> y certificado en accesibilidad <strong>WCAG 2.1 AA</strong>.
+        </p>
+        <div class="hero-badges">
+          <span class="badge-item"><span class="badge-dot dot-orange"></span> Orange Identity</span>
+          <span class="badge-item"><span class="badge-dot dot-blue"></span> WCAG 2.1 AA Certified</span>
+          <span class="badge-item"><span class="badge-dot dot-green"></span> SHA-256 WebCheckout</span>
+          <span class="badge-item"><span class="badge-dot dot-purple"></span> SQLite Persistence</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Catálogo de Productos -->
+    <section id="catalog-section" class="catalog-section" aria-labelledby="catalog-title">
+      <div class="section-header">
+        <h2 id="catalog-title" class="section-title">Soluciones y Equipos Transaccionales</h2>
+        <p class="section-subtitle">Selecciona los productos para agregarlos al carrito y probar el flujo de autorización bancaria.</p>
+      </div>
+
+      <div id="products-grid" class="products-grid" role="region" aria-label="Listado de productos">
+        <!-- Generado dinámicamente por app.js -->
+      </div>
+    </section>
+
+    <!-- Sección de Checkout y Pagos -->
+    <section id="checkout-section" class="checkout-section" aria-labelledby="checkout-title">
+      <div class="section-header">
+        <h2 id="checkout-title" class="section-title">Pasarela de Pagos & Formulario de Checkout</h2>
+        <p class="section-subtitle">Ingresa los datos del comprador y elige el canal de pago Placetopay.</p>
+      </div>
+
+      <div class="checkout-grid">
+        <!-- Formulario del Comprador -->
+        <div class="checkout-form-card">
+          <h3 class="card-title">1. Información del Comprador (Buyer Contract)</h3>
+          <form id="checkout-form" novalidate>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="buyer-name">Nombre <span class="required" aria-hidden="true">*</span></label>
+                <input type="text" id="buyer-name" name="name" required aria-required="true" placeholder="Ej. Carlos" autocomplete="given-name">
+                <span class="field-error" id="error-buyer-name" aria-live="polite"></span>
+              </div>
+              <div class="form-group">
+                <label for="buyer-surname">Apellido <span class="required" aria-hidden="true">*</span></label>
+                <input type="text" id="buyer-surname" name="surname" required aria-required="true" placeholder="Ej. Gómez" autocomplete="family-name">
+                <span class="field-error" id="error-buyer-surname" aria-live="polite"></span>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="buyer-email">Correo Electrónico <span class="required" aria-hidden="true">*</span></label>
+                <input type="email" id="buyer-email" name="email" required aria-required="true" placeholder="comprador@ejemplo.com" autocomplete="email">
+                <span class="field-error" id="error-buyer-email" aria-live="polite"></span>
+              </div>
+              <div class="form-group">
+                <label for="buyer-mobile">Teléfono Móvil <span class="required" aria-hidden="true">*</span></label>
+                <input type="tel" id="buyer-mobile" name="mobile" required aria-required="true" placeholder="3001234567" autocomplete="tel">
+                <span class="field-error" id="error-buyer-mobile" aria-live="polite"></span>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="buyer-doc-type">Tipo de Documento <span class="required" aria-hidden="true">*</span></label>
+                <select id="buyer-doc-type" name="documentType" required aria-required="true">
+                  <option value="CC">Cédula de Ciudadanía (CC)</option>
+                  <option value="CE">Cédula de Extranjería (CE)</option>
+                  <option value="NIT">NIT Empresa</option>
+                  <option value="PPN">Pasaporte (PPN)</option>
+                  <option value="TI">Tarjeta de Identidad (TI)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="buyer-doc">Número de Documento <span class="required" aria-hidden="true">*</span></label>
+                <input type="text" id="buyer-doc" name="document" required aria-required="true" placeholder="1020304050">
+                <span class="field-error" id="error-buyer-doc" aria-live="polite"></span>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="buyer-street">Dirección de Entrega <span class="required" aria-hidden="true">*</span></label>
+                <input type="text" id="buyer-street" name="street" required aria-required="true" placeholder="Calle 100 # 15-20" autocomplete="street-address">
+              </div>
+              <div class="form-group">
+                <label for="buyer-city">Ciudad <span class="required" aria-hidden="true">*</span></label>
+                <input type="text" id="buyer-city" name="city" required aria-required="true" placeholder="Bogotá D.C." autocomplete="address-level2">
+              </div>
+            </div>
+
+            <!-- Selección de Canal Placetopay -->
+            <div class="payment-channel-section">
+              <h3 class="card-title">2. Selección de Canal Placetopay</h3>
+              <div class="channel-options" role="radiogroup" aria-label="Canal de procesamiento de pagos">
+                
+                <label class="channel-card active" id="channel-label-webcheckout">
+                  <input type="radio" name="paymentChannel" value="WEBCHECKOUT" checked>
+                  <div class="channel-body">
+                    <div class="channel-header-row">
+                      <span class="channel-name">Placetopay WebCheckout</span>
+                      <span class="channel-tag tag-official">Recomendado</span>
+                    </div>
+                    <p class="channel-desc">Redirección segura a la interfaz oficial de Evertec Placetopay con soporte para PSE, Tarjetas y Billeteras.</p>
+                  </div>
+                </label>
+
+                <label class="channel-card" id="channel-label-gateway">
+                  <input type="radio" name="paymentChannel" value="GATEWAY_DIRECT">
+                  <div class="channel-body">
+                    <div class="channel-header-row">
+                      <span class="channel-name">API Gateway Directo</span>
+                      <span class="channel-tag tag-api">Captura Directa</span>
+                    </div>
+                    <p class="channel-desc">Captura y validación de tarjeta en el comercio con autorización en segundo plano e inspección antifraude.</p>
+                  </div>
+                </label>
+
+              </div>
+            </div>
+
+            <!-- Bloque de Tarjeta para Gateway Directo -->
+            <div id="gateway-card-fields" class="gateway-card-fields" hidden>
+              <h4 class="card-subtitle">Datos de la Tarjeta de Crédito / Débito</h4>
+              
+              <div class="form-group">
+                <label for="card-number">Número de Tarjeta <span class="required" aria-hidden="true">*</span></label>
+                <div class="input-with-icon">
+                  <input type="text" id="card-number" name="cardNumber" maxlength="19" placeholder="4000 1234 5678 9010" autocomplete="cc-number">
+                  <span id="card-brand-badge" class="brand-badge" aria-live="polite">GENÉRICA</span>
+                </div>
+                <span class="field-hint">Tip de prueba: Termina en <strong>0005</strong> (Fondos insuf.), <strong>0054</strong> (Vencida), <strong>0055</strong> (CVV erróneo), <strong>0012</strong> (No permitida), <strong>0099</strong> (Antifraude), <strong>0091</strong> (Pendiente) o cualquier otro (Aprobada).</span>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="card-exp">Vencimiento (MM/YY) <span class="required" aria-hidden="true">*</span></label>
+                  <input type="text" id="card-exp" name="cardExp" maxlength="5" placeholder="12/28" autocomplete="cc-exp">
+                </div>
+                <div class="form-group">
+                  <label for="card-cvv">Código CVV <span class="required" aria-hidden="true">*</span></label>
+                  <input type="password" id="card-cvv" name="cardCvv" maxlength="4" placeholder="123" autocomplete="cc-csc">
+                </div>
+                <div class="form-group">
+                  <label for="card-installments">Cuotas <span class="required" aria-hidden="true">*</span></label>
+                  <select id="card-installments" name="installments">
+                    <option value="1">1 cuota (Sin interés)</option>
+                    <option value="3">3 cuotas</option>
+                    <option value="6">6 cuotas</option>
+                    <option value="12">12 cuotas</option>
+                    <option value="24">24 cuotas</option>
+                    <option value="36">36 cuotas</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Botón de Envío y Región de Estado -->
+            <div class="checkout-actions">
+              <button type="submit" id="submit-pay-btn" class="btn btn-primary btn-block">
+                <span id="btn-spinner" class="spinner" hidden aria-hidden="true"></span>
+                <span id="btn-text">Pagar <strong id="btn-amount">$0 COP</strong></span>
+              </button>
+            </div>
+
+            <div id="checkout-feedback" class="checkout-feedback" aria-live="polite"></div>
+          </form>
+        </div>
+
+        <!-- Resumen del Carrito y Totalizador -->
+        <div class="order-summary-card">
+          <h3 class="card-title">Resumen de la Orden</h3>
+          <div id="summary-items" class="summary-items">
+            <!-- Renderizado dinámico -->
+            <p class="empty-cart-msg">Tu carrito está vacío. Agrega productos desde el catálogo para continuar.</p>
+          </div>
+
+          <div class="summary-divider"></div>
+
+          <div class="summary-totals">
+            <div class="total-row">
+              <span>Subtotal:</span>
+              <span id="summary-subtotal">$0 COP</span>
+            </div>
+            <div class="total-row">
+              <span>IVA (19%):</span>
+              <span id="summary-tax">$0 COP</span>
+            </div>
+            <div class="total-row grand-total">
+              <span>Total a Pagar:</span>
+              <span id="summary-total">$0 COP</span>
+            </div>
+          </div>
+
+          <div class="security-box">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#166534" stroke-width="2" aria-hidden="true">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+            <div class="security-text">
+              <strong>Transacción 100% Protegida</strong>
+              <p>Encriptación bancaria SSL/TLS con autenticación criptográfica Placetopay tranKey SHA-256.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Visor de Evidencias Transaccionales -->
+    <section id="evidences-section" class="evidences-section" aria-labelledby="evidences-title">
+      <div class="section-header">
+        <h2 id="evidences-title" class="section-title">Trazabilidad y Evidencias Transaccionales (SQLite)</h2>
+        <p class="section-subtitle">
+          Auditoría en tiempo real de transacciones persistidas en SQLite con sus estados: 
+          <strong class="text-success">APROBADO</strong>, <strong class="text-warning">PENDIENTE</strong> y la matriz de <strong class="text-danger">RECHAZADOS</strong>.
+        </p>
+      </div>
+
+      <div class="evidences-filters" role="group" aria-label="Filtros de evidencias">
+        <button class="filter-btn active" data-filter="ALL">Todos (<span id="count-all">0</span>)</button>
+        <button class="filter-btn" data-filter="APPROVED">Aprobados (<span id="count-approved">0</span>)</button>
+        <button class="filter-btn" data-filter="PENDING">Pendientes (<span id="count-pending">0</span>)</button>
+        <button class="filter-btn" data-filter="REJECTED">Rechazados (<span id="count-rejected">0</span>)</button>
+        <button id="refresh-evidences-btn" class="btn btn-secondary btn-sm" aria-label="Actualizar listado de evidencias">
+          🔄 Actualizar
+        </button>
+      </div>
+
+      <!-- Tabla de Evidencias -->
+      <div class="table-responsive">
+        <table class="evidences-table" aria-label="Tabla de transacciones registradas">
+          <thead>
+            <tr>
+              <th scope="col">Referencia</th>
+              <th scope="col">Canal</th>
+              <th scope="col">Estado</th>
+              <th scope="col">Razón / Código</th>
+              <th scope="col">Mensaje Transaccional</th>
+              <th scope="col">Monto COP</th>
+              <th scope="col">Fecha / Hora</th>
+              <th scope="col">Acción</th>
+            </tr>
+          </thead>
+          <tbody id="evidences-tbody">
+            <!-- Renderizado dinámico -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Cuadro Explicativo de la Matriz de Rechazos -->
+      <div class="taxonomy-info-box">
+        <h3 class="taxonomy-title">📋 Taxonomía de Causales de Rechazo Soportadas</h3>
+        <div class="taxonomy-grid">
+          <div class="taxonomy-card">
+            <span class="tax-tag">Banco Emisor (05)</span>
+            <strong>Fondos Insuficientes</strong>
+            <p>Cupo no disponible en la entidad emisora.</p>
+          </div>
+          <div class="taxonomy-card">
+            <span class="tax-tag">Banco Emisor (54)</span>
+            <strong>Tarjeta Vencida</strong>
+            <p>Fecha de expiración pasada o errónea.</p>
+          </div>
+          <div class="taxonomy-card">
+            <span class="tax-tag">Validación (55)</span>
+            <strong>CVV / CVC Inválido</strong>
+            <p>Fallo en código de seguridad de 3 dígitos.</p>
+          </div>
+          <div class="taxonomy-card">
+            <span class="tax-tag">Usuario (?C)</span>
+            <strong>Cancelado en Checkout</strong>
+            <p>Abandono deliberado por el pagador.</p>
+          </div>
+          <div class="taxonomy-card">
+            <span class="tax-tag">Antifraude (AF)</span>
+            <strong>Declinada por Riesgo</strong>
+            <p>Scoring Cybersource / RedShield bloqueado.</p>
+          </div>
+          <div class="taxonomy-card">
+            <span class="tax-tag">Regla Bancaria (12)</span>
+            <strong>No Permitida</strong>
+            <p>E-commerce bloqueado por el banco.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Drawer Lateral Accesible del Carrito -->
+  <div id="cart-drawer-overlay" class="drawer-overlay" hidden style="display: none;"></div>
+  <aside id="cart-drawer" class="cart-drawer" role="dialog" aria-modal="true" aria-labelledby="drawer-title" hidden style="display: none;">
+    <div class="drawer-header">
+      <h2 id="drawer-title" class="drawer-title">Carrito de Compras</h2>
+      <button id="close-cart-btn" class="close-btn" aria-label="Cerrar carrito de compras">&times;</button>
+    </div>
+    <div id="cart-items-container" class="cart-items-container">
+      <!-- Items dinámicos -->
+    </div>
+    <div class="drawer-footer">
+      <div class="drawer-total-row">
+        <span>Total:</span>
+        <strong id="drawer-total-amount">$0 COP</strong>
+      </div>
+      <button id="proceed-to-checkout-btn" class="btn btn-primary btn-block">Ir a Pagar</button>
+    </div>
+  </aside>
+
+  <!-- Modal Accesible para Inspeccionar Payload JSON -->
+  <div id="payload-modal-overlay" class="modal-overlay" hidden style="display: none;"></div>
+  <div id="payload-modal" class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="modal-title" hidden style="display: none;">
+    <div class="modal-header">
+      <h3 id="modal-title" class="modal-title">Detalle de Evidencia Transaccional</h3>
+      <button id="close-modal-btn" class="close-btn" aria-label="Cerrar ventana">&times;</button>
+    </div>
+    <div class="modal-body">
+      <pre id="modal-json-content" tabindex="0"></pre>
+    </div>
+  </div>
+
+  <!-- Footer Institucional -->
+  <footer class="app-footer" role="contentinfo">
+    <div class="footer-container">
+      <div class="footer-left">
+        <p><strong>EVERTEC & Placetopay</strong> — Líderes en tecnología financiera y procesamiento seguro.</p>
+        <p class="footer-subtext">Solución desarrollada bajo la cultura <em>Spec-Driven Development (Anthropic)</em> con arnés <em>Antigravity</em>.</p>
+      </div>
+      <div class="footer-right">
+        <span class="compliance-tag">WCAG 2.1 AA Compliant</span>
+        <span class="compliance-tag">Placetopay Sandbox Active</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Lógica Reactiva Frontend -->
+  <script src="/app.js" defer></script>
+</body>
+</html>

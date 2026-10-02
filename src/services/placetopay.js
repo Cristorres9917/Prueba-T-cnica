@@ -13,6 +13,12 @@ export class PlacetopayService {
     this.secretKey = config.secretKey || process.env.P2P_SECRET_KEY || DEFAULT_CONFIG.secretKey;
     this.checkoutUrl = config.checkoutUrl || process.env.P2P_CHECKOUT_URL || DEFAULT_CONFIG.checkoutUrl;
     this.gatewayUrl = config.gatewayUrl || process.env.P2P_GATEWAY_URL || DEFAULT_CONFIG.gatewayUrl;
+    this.config = {
+      login: this.login,
+      secretKey: this.secretKey,
+      webcheckoutEndpoint: this.checkoutUrl,
+      gatewayEndpoint: this.gatewayUrl
+    };
   }
 
   generateAuth() {
@@ -285,3 +291,6 @@ export class PlacetopayService {
     }
   }
 }
+
+export const placetopayService = new PlacetopayService();
+

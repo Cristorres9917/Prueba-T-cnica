@@ -78,7 +78,12 @@ try {
 try {
   const hasValidatorSkill = fs.existsSync(path.join(rootDir, '.agents', 'skills', 'sdd-validator', 'SKILL.md'));
   const hasAuthSkill = fs.existsSync(path.join(rootDir, '.agents', 'skills', 'placetopay-auth', 'SKILL.md'));
-  recordCheck('Skills de Arnés', hasValidatorSkill && hasAuthSkill, 'Skills sdd-validator y placetopay-auth configuradas');
+  const hasGitSkill = fs.existsSync(path.join(rootDir, '.agents', 'skills', 'git-workflow', 'SKILL.md'));
+  const hasA11ySkill = fs.existsSync(path.join(rootDir, '.agents', 'skills', 'a11y-accessibility', 'SKILL.md'));
+  const hasSeoSkill = fs.existsSync(path.join(rootDir, '.agents', 'skills', 'seo-optimizer', 'SKILL.md'));
+  const hasPerfSkill = fs.existsSync(path.join(rootDir, '.agents', 'skills', 'web-performance-best-practices', 'SKILL.md'));
+  const allSkills = hasValidatorSkill && hasAuthSkill && hasGitSkill && hasA11ySkill && hasSeoSkill && hasPerfSkill;
+  recordCheck('Skills de Arnés', allSkills, allSkills ? 'Skills sdd-validator, placetopay-auth, git-workflow, a11y, seo y performance activas' : 'Faltan skills requeridas en .agents/skills');
 } catch (e) {
   recordCheck('Skills de Arnés', false, e.message);
 }

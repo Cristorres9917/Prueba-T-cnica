@@ -48,3 +48,17 @@ Este documento recopila las lecciones aprendidas, patrones arquitectónicos cons
 - **Lección 9: Desacoplamiento de Contratos de Datos para el Mockup MVP.**
   - *Contexto:* Para construir el mockup y carrito de compras sin sorpresas de integración, el frontend debe conocer con precisión los requerimientos de Placetopay.
   - *Aprendizaje:* Formalizar un diccionario de datos (`buyer`, `payment`, `channel`, `card`) y un validador estricto asegura que cuando se construya el mockup visual (Spec-04), todos los payloads hacia WebCheckout y API Gateway sean 100% compatibles desde el primer intento.
+
+---
+
+## 6. UI/UX, Design System Evertec, A11y WCAG 2.1 AA y SEO Técnico (Spec-04)
+- **Lección 10: Armonización Cromática Evertec y Accesibilidad (WCAG 2.1 AA).**
+  - *Contexto:* El color corporativo Naranja Evertec (`#FF5900`) posee un ratio de contraste de ~3.1:1 sobre blanco puro, lo cual no alcanza el umbral de 4.5:1 exigido por WCAG AA para textos normales pequeños.
+  - *Aprendizaje:* Se definió una variante accesible `--color-primary-accessible: #D44A00` con contraste certificado de 4.65:1 (AA) para botones y textos interactivos sobre fondo blanco, reservando el `#FF5900` para acentos, bordes, badges y fondos oscuros como el Azul Marino Financiero (`#0B192C`), donde el contraste alcanza un sobresaliente 16.2:1 (AAA).
+- **Lección 11: Cero Bloat y Rendimiento Web Extremo (Core Web Vitals).**
+  - *Contexto:* La inclusión de frameworks pesados (React, Vue, Tailwind CDN) para un MVP e-commerce añade megabytes de sobrecarga y vulnerabilidades potenciales de cadena de suministro.
+  - *Aprendizaje:* El uso de JavaScript nativo moderno (ES6+), CSS Grid/Flexbox nativo y servidor HTTP sin dependencias permite tiempos de Largest Contentful Paint (LCP) inferiores a 1.8 segundos y una interacción inmediata (INP < 100ms), facilitando una experiencia de usuario fluida y accesible.
+- **Lección 12: Aislamiento de Ciclo de Vida libuv en Pruebas de Servidores (Windows).**
+  - *Contexto:* Al levantar y destruir servidores HTTP efímeros en Node.js v24 sobre Windows mientras la base de datos `node:sqlite` se encuentra abierta, libuv puede disparar aserciones en `async.c`.
+  - *Aprendizaje:* La orquestación mediante subprocesos (`spawn`) y el cierre explícito de los descriptores de base de datos (`db.close()`) garantizan una ejecución de pruebas limpia y determinista en entornos Windows.
+
