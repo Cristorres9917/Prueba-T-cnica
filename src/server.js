@@ -108,7 +108,7 @@ export const server = http.createServer(async (req, res) => {
       }
 
       // Preparar payload para Placetopay WebCheckout
-      const returnUrl = payload.returnUrl || `http://${req.headers.host || 'localhost:3000'}/?status=return`;
+      const returnUrl = payload.returnUrl || `http://${req.headers.host || 'localhost:3000'}/?status=return&reference=${encodeURIComponent(payload.payment.reference)}`;
       const numTotal = typeof payload.payment.amount === 'object' && payload.payment.amount !== null
         ? Number(payload.payment.amount.total)
         : Number(payload.payment.amount);
@@ -265,19 +265,113 @@ export const server = http.createServer(async (req, res) => {
       });
     }
 
-    // 3. API: Consultar Estado de Sesión WebCheckout
+    // 3. API: Consultar y Sincronizar Estado de Sesión WebCheckout
     if (pathname.startsWith('/api/checkout/status/') && method === 'GET') {
       const requestId = pathname.split('/').pop();
       if (!requestId) {
         return sendJson(res, 400, { success: false, error: 'RequestId requerido' });
       }
+
       const statusResult = await placetopayService.getSessionStatus(requestId);
-      return sendJson(res, 200, { success: true, ...statusResult });
+
+      // Sincronizar en SQLite si Placetopay devolvió estado
+      if (statusResult?.status?.status) {
+        const session = db.getSessionByRequestId(requestId);
+        if (session) {
+          db.updateSessionStatus(
+            requestId,
+            statusResult.status.status,
+            statusResult.status.reason,
+            statusResult.status.message,
+            statusResult
+          );
+
+          const tx = db.getTransactionByReference(session.reference);
+          if (tx) {
+            const authCode = statusResult.payment?.[0]?.authorization || null;
+            const receipt = statusResult.payment?.[0]?.receipt || null;
+            const pMethod = statusResult.payment?.[0]?.paymentMethod || tx.payment_method || 'WEBCHECKOUT';
+
+            let updatedRaw = tx.raw_payload || {};
+            if (typeof updatedRaw === 'string') {
+              try { updatedRaw = JSON.parse(updatedRaw); } catch(e) { updatedRaw = {}; }
+            }
+
+            updatedRaw = {
+              ...updatedRaw,
+              status: statusResult.status,
+              statusDate: statusResult.status.date,
+              authorizationCode: authCode,
+              receipt: receipt,
+              placetopayStatus: statusResult
+            };
+
+            db.updateTransactionByReference(session.reference, {
+              status: statusResult.status.status,
+              statusReason: statusResult.status.reason,
+              statusMessage: statusResult.status.message,
+              authorizationCode: authCode,
+              receipt: receipt,
+              paymentMethod: pMethod,
+              rawPayload: updatedRaw
+            });
+          }
+        }
+      }
+
+      return sendJson(res, 200, {
+        ...statusResult,
+        success: Boolean(statusResult && statusResult.status && statusResult.status !== 'FAILED' && statusResult.status !== 'ERROR')
+      });
     }
 
-    // 4. API: Listar Evidencias Transaccionales desde SQLite
+    // 4. API: Listar Evidencias Transaccionales desde SQLite (con auto-sincronización de PENDING)
     if (pathname === '/api/transactions/evidences' && method === 'GET') {
       const filterStatus = parsedUrl.searchParams.get('status') || null;
+
+      // Auto-sincronizar transacciones PENDING recientes con sesión en Placetopay
+      const pendingTxs = db.getTransactions('PENDING');
+      for (const pTx of pendingTxs) {
+        if (pTx.channel === 'WEBCHECKOUT' && pTx.raw_payload) {
+          let raw = pTx.raw_payload;
+          if (typeof raw === 'string') {
+            try { raw = JSON.parse(raw); } catch (e) { raw = {}; }
+          }
+          const reqId = raw.requestId;
+          if (reqId) {
+            try {
+              const statusResult = await placetopayService.getSessionStatus(reqId);
+              if (statusResult?.status?.status && statusResult.status.status !== 'PENDING') {
+                const authCode = statusResult.payment?.[0]?.authorization || null;
+                const receipt = statusResult.payment?.[0]?.receipt || null;
+                const pMethod = statusResult.payment?.[0]?.paymentMethod || 'WEBCHECKOUT';
+
+                const updatedRaw = {
+                  ...raw,
+                  status: statusResult.status,
+                  statusDate: statusResult.status.date,
+                  authorizationCode: authCode,
+                  receipt: receipt,
+                  placetopayStatus: statusResult
+                };
+
+                db.updateTransactionByReference(pTx.reference, {
+                  status: statusResult.status.status,
+                  statusReason: statusResult.status.reason,
+                  statusMessage: statusResult.status.message,
+                  authorizationCode: authCode,
+                  receipt: receipt,
+                  paymentMethod: pMethod,
+                  rawPayload: updatedRaw
+                });
+              }
+            } catch (syncErr) {
+              // Silenciosamente ignorar errores de red en polling de background
+            }
+          }
+        }
+      }
+
       const transactions = db.getTransactions(filterStatus);
       return sendJson(res, 200, {
         success: true,

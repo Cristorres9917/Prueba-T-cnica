@@ -188,7 +188,8 @@ export class PlacetopayService {
       }
 
       return {
-        success: responseData.status?.status === 'APPROVED' || responseData.status?.status === 'OK',
+        success: responseData.status?.status !== 'FAILED' && responseData.status?.status !== 'ERROR',
+        isApproved: responseData.status?.status === 'APPROVED',
         status: responseData.status?.status,
         statusDetails: responseData.status,
         payment: responseData.payment,

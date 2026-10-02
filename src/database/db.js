@@ -246,19 +246,65 @@ export function initDatabase(dbPath = defaultDbPath) {
     },
 
     getTransactions(status = null) {
+      let rows;
       if (status) {
-        return db.prepare(`SELECT * FROM transactions WHERE status = ? ORDER BY created_at DESC`).all(status);
+        rows = db.prepare(`SELECT * FROM transactions WHERE status = ? ORDER BY created_at DESC`).all(status);
+      } else {
+        rows = db.prepare(`SELECT * FROM transactions ORDER BY created_at DESC`).all();
       }
-      return db.prepare(`SELECT * FROM transactions ORDER BY created_at DESC`).all();
+      return rows.map(row => {
+        if (row && row.raw_payload && typeof row.raw_payload === 'string') {
+          try {
+            row.raw_payload = JSON.parse(row.raw_payload);
+          } catch (e) {}
+        }
+        return row;
+      });
     },
 
     getTransactionByReference(reference) {
       const stmt = db.prepare(`SELECT * FROM transactions WHERE reference = ?`);
       const row = stmt.get(reference);
-      if (row && row.raw_payload) {
+      if (row && row.raw_payload && typeof row.raw_payload === 'string') {
         try { row.raw_payload = JSON.parse(row.raw_payload); } catch (e) {}
       }
       return row;
+    },
+
+    getTransactionBySessionId(sessionId) {
+      const stmt = db.prepare(`SELECT * FROM transactions WHERE session_id = ?`);
+      const row = stmt.get(sessionId);
+      if (row && row.raw_payload && typeof row.raw_payload === 'string') {
+        try { row.raw_payload = JSON.parse(row.raw_payload); } catch (e) {}
+      }
+      return row;
+    },
+
+    updateTransactionByReference(reference, updateData) {
+      const stmt = db.prepare(`
+        UPDATE transactions
+        SET status = ?,
+            status_reason = ?,
+            status_message = ?,
+            authorization_code = COALESCE(?, authorization_code),
+            receipt = COALESCE(?, receipt),
+            payment_method = COALESCE(?, payment_method),
+            raw_payload = COALESCE(?, raw_payload)
+        WHERE reference = ?
+      `);
+
+      stmt.run(
+        updateData.status,
+        updateData.statusReason || '',
+        updateData.statusMessage || '',
+        updateData.authorizationCode || null,
+        updateData.receipt || null,
+        updateData.paymentMethod || null,
+        updateData.rawPayload ? (typeof updateData.rawPayload === 'object' ? JSON.stringify(updateData.rawPayload) : updateData.rawPayload) : null,
+        reference
+      );
+
+      return this.getTransactionByReference(reference);
     },
 
     saveAuditLog(logData) {
