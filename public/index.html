@@ -28,7 +28,7 @@
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230B192C'/><path d='M25 50 L50 25 L75 50 L50 75 Z' fill='%23FF5900'/><circle cx='50' cy='50' r='12' fill='%23FFFFFF'/></svg>">
 
   <!-- Estilos y Design System Evertec -->
-  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/styles.css?v=20261001-2">
 
   <!-- Marcado Estructurado JSON-LD (Schema.org) - 12 Smartphones -->
   <script type="application/ld+json">
@@ -268,8 +268,7 @@
       <nav class="app-nav" aria-label="Navegación principal">
         <ul class="nav-list">
           <li><a href="#catalog-section" class="nav-link">Catálogo</a></li>
-          <li><button id="nav-checkout-btn" class="nav-link nav-btn-link" aria-label="Abrir modal de Checkout">Checkout</button></li>
-          <li><button id="nav-history-btn" class="nav-link nav-btn-link" aria-label="Abrir modal de Historial">Historial</button></li>
+          <li><button type="button" id="nav-history-btn" class="nav-link nav-btn-link" onclick="openHistoryModal()" aria-label="Abrir modal de Historial">Historial</button></li>
         </ul>
       </nav>
 
@@ -418,7 +417,7 @@
         <span>Total a Pagar:</span>
         <strong id="drawer-total-amount">$0 COP</strong>
       </div>
-      <button id="proceed-to-checkout-btn" class="btn btn-primary btn-block">Ir a Pagar &rarr;</button>
+      <button type="button" id="proceed-to-checkout-btn" class="btn btn-primary btn-block" disabled aria-disabled="true" title="Agrega smartphones al carrito para proceder al pago">Ir a Pagar &rarr;</button>
     </div>
   </aside>
 
@@ -512,7 +511,7 @@
 
         <!-- Botón de Pago WebCheckout -->
         <div class="checkout-actions">
-          <button type="submit" id="submit-pay-btn" class="btn btn-primary btn-block">
+          <button type="submit" id="submit-pay-btn" class="btn btn-primary btn-block" disabled aria-disabled="true">
             <span id="btn-spinner" class="spinner" hidden aria-hidden="true"></span>
             <span id="btn-text">Pagar <strong id="btn-amount">$0 COP</strong></span>
           </button>
@@ -565,6 +564,6 @@
   </footer>
 
   <!-- Lógica Reactiva Frontend -->
-  <script src="/app.js" defer></script>
+  <script src="/app.js?v=20261001-2" defer></script>
 </body>
 </html>

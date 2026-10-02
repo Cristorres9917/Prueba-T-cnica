@@ -232,17 +232,36 @@ await assertTest('TEST-5.7', 'Flujo completo de sesión WebCheckout con almacena
   }
 });
 
-// TEST-5.8: Botón de "Historial" en navegación y encapsulamiento en modal (#history-modal)
-await assertTest('TEST-5.8', 'Historial desplegado en modal accesible (#history-modal) accionado desde #nav-history-btn', () => {
+// TEST-5.8: Botón de "Historial" en navegación, remoción de checkout en header y botón de pagar deshabilitado cuando carrito está vacío
+await assertTest('TEST-5.8', 'Historial en modal accesible (#history-modal), remoción de Checkout en nav y botón de pagar deshabilitado sin productos', () => {
   const html = fs.readFileSync(path.join(rootDir, 'public', 'index.html'), 'utf8');
   const appJs = fs.readFileSync(path.join(rootDir, 'public', 'app.js'), 'utf8');
 
+  // Validación 1: Botón Historial en Header con invocación directa
   if (!html.includes('id="nav-history-btn"')) {
     throw new Error('Falta botón #nav-history-btn en navegación');
   }
   if (!html.includes('Historial</button>')) {
     throw new Error('El texto del botón de navegación debe ser explícitamente "Historial"');
   }
+  if (!html.includes('onclick="openHistoryModal()"')) {
+    throw new Error('El botón #nav-history-btn debe contar con onclick="openHistoryModal()" para invocación inmediata');
+  }
+  if (!appJs.includes('window.openHistoryModal = openHistoryModal')) {
+    throw new Error('La función openHistoryModal debe estar expuesta en window para invocación global');
+  }
+
+  // Validación 2: En el header se eliminó Checkout (innecesario)
+  if (html.includes('id="nav-checkout-btn"') || html.includes('>Checkout</button>') || html.includes('>Checkout</a>')) {
+    throw new Error('El enlace/botón de Checkout en el header debe ser retirado');
+  }
+
+  // Validación 3: Regla de negocio - botones de pagar deshabilitados si no hay productos
+  if (!appJs.includes('proceedBtn.disabled = isCartEmpty') || !appJs.includes('submitPayBtn.disabled = isCartEmpty')) {
+    throw new Error('Regla de negocio no aplicada: los botones de pagar deben deshabilitarse si el carrito está vacío');
+  }
+
+  // Validación 4: Modal de Historial y Redirección Directa
   if (!html.includes('id="history-modal"') || !html.includes('id="history-modal-overlay"')) {
     throw new Error('Falta modal #history-modal o su overlay en HTML');
   }

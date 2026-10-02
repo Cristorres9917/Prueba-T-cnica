@@ -309,6 +309,31 @@ function renderCart() {
   if (modalSummaryTotal) modalSummaryTotal.textContent = formatCOP(totalAmount);
   if (btnAmount) btnAmount.textContent = formatCOP(totalAmount);
 
+  // Regla de Negocio: Deshabilitar botones de pago si el cliente no seleccionó ningún producto
+  const isCartEmpty = (totalItems === 0);
+
+  const proceedBtn = document.getElementById('proceed-to-checkout-btn');
+  if (proceedBtn) {
+    proceedBtn.disabled = isCartEmpty;
+    if (isCartEmpty) {
+      proceedBtn.setAttribute('aria-disabled', 'true');
+      proceedBtn.title = 'Agrega smartphones al carrito para pagar';
+    } else {
+      proceedBtn.removeAttribute('aria-disabled');
+      proceedBtn.title = '';
+    }
+  }
+
+  const submitPayBtn = document.getElementById('submit-pay-btn');
+  if (submitPayBtn) {
+    submitPayBtn.disabled = isCartEmpty;
+    if (isCartEmpty) {
+      submitPayBtn.setAttribute('aria-disabled', 'true');
+    } else {
+      submitPayBtn.removeAttribute('aria-disabled');
+    }
+  }
+
   if (modalSummaryItems) {
     if (cart.items.length === 0) {
       modalSummaryItems.innerHTML = '<p class="empty-cart-msg">No hay productos seleccionados.</p>';
@@ -329,6 +354,8 @@ function openCartDrawer() {
   const overlay = document.getElementById('cart-drawer-overlay');
   const toggleBtn = document.getElementById('cart-toggle-btn');
   if (drawer && overlay) {
+    drawer.removeAttribute('hidden');
+    overlay.removeAttribute('hidden');
     drawer.hidden = false;
     overlay.hidden = false;
     drawer.style.display = 'flex';
@@ -344,6 +371,8 @@ function closeCartDrawer() {
   const overlay = document.getElementById('cart-drawer-overlay');
   const toggleBtn = document.getElementById('cart-toggle-btn');
   if (drawer && overlay) {
+    drawer.setAttribute('hidden', '');
+    overlay.setAttribute('hidden', '');
     drawer.hidden = true;
     overlay.hidden = true;
     drawer.style.display = 'none';
@@ -355,11 +384,18 @@ function closeCartDrawer() {
 }
 
 function openCheckoutModal() {
+  const { totalItems } = cart.getTotals();
+  if (totalItems === 0) {
+    alert('Tu carrito está vacío. Agrega al menos un smartphone antes de proceder al pago.');
+    return;
+  }
   closeCartDrawer();
   closeHistoryModal();
   const modal = document.getElementById('checkout-modal');
   const overlay = document.getElementById('checkout-modal-overlay');
   if (modal && overlay) {
+    modal.removeAttribute('hidden');
+    overlay.removeAttribute('hidden');
     modal.hidden = false;
     overlay.hidden = false;
     modal.style.display = 'flex';
@@ -373,6 +409,8 @@ function closeCheckoutModal() {
   const modal = document.getElementById('checkout-modal');
   const overlay = document.getElementById('checkout-modal-overlay');
   if (modal && overlay) {
+    modal.setAttribute('hidden', '');
+    overlay.setAttribute('hidden', '');
     modal.hidden = true;
     overlay.hidden = true;
     modal.style.display = 'none';
@@ -384,10 +422,11 @@ function closeCheckoutModal() {
 function openHistoryModal() {
   closeCartDrawer();
   closeCheckoutModal();
-  loadEvidences('ALL');
   const modal = document.getElementById('history-modal');
   const overlay = document.getElementById('history-modal-overlay');
   if (modal && overlay) {
+    modal.removeAttribute('hidden');
+    overlay.removeAttribute('hidden');
     modal.hidden = false;
     overlay.hidden = false;
     modal.style.display = 'flex';
@@ -395,12 +434,19 @@ function openHistoryModal() {
     const closeBtn = document.getElementById('close-history-modal-btn');
     if (closeBtn) closeBtn.focus();
   }
+  try {
+    loadEvidences('ALL');
+  } catch (err) {
+    console.error('Error al cargar evidencias:', err);
+  }
 }
 
 function closeHistoryModal() {
   const modal = document.getElementById('history-modal');
   const overlay = document.getElementById('history-modal-overlay');
   if (modal && overlay) {
+    modal.setAttribute('hidden', '');
+    overlay.setAttribute('hidden', '');
     modal.hidden = true;
     overlay.hidden = true;
     modal.style.display = 'none';
@@ -767,6 +813,19 @@ window.checkWebcheckoutStatus = async function(requestId) {
   }
 };
 
+// Exposición Global de Funciones para Invocación Directa y Testing
+window.openHistoryModal = openHistoryModal;
+window.closeHistoryModal = closeHistoryModal;
+window.openCheckoutModal = openCheckoutModal;
+window.closeCheckoutModal = closeCheckoutModal;
+window.openCartDrawer = openCartDrawer;
+window.closeCartDrawer = closeCartDrawer;
+window.openDetailModal = openDetailModal;
+window.closeDetailModal = closeDetailModal;
+window.openPayloadModal = openPayloadModal;
+window.closePayloadModal = closePayloadModal;
+window.loadEvidences = loadEvidences;
+
 // 10. Inicialización en la Carga del DOM
 document.addEventListener('DOMContentLoaded', () => {
   // Asegurar que modales y drawer inicien cerrados
@@ -796,19 +855,15 @@ document.addEventListener('DOMContentLoaded', () => {
   if (closeCartBtn) closeCartBtn.addEventListener('click', closeCartDrawer);
   if (cartOverlay) cartOverlay.addEventListener('click', closeCartDrawer);
 
-  // Botón "Ir a Pagar" del Drawer: Abre el Modal de Checkout
+  // Botón "Ir a Pagar" del Drawer: Abre el Modal de Checkout (validando productos)
   const proceedBtn = document.getElementById('proceed-to-checkout-btn');
   if (proceedBtn) {
     proceedBtn.addEventListener('click', () => {
-      openCheckoutModal();
-    });
-  }
-
-  // Enlace Checkout en el Nav
-  const navCheckoutBtn = document.getElementById('nav-checkout-btn');
-  if (navCheckoutBtn) {
-    navCheckoutBtn.addEventListener('click', (e) => {
-      e.preventDefault();
+      const { totalItems } = cart.getTotals();
+      if (totalItems === 0) {
+        alert('Debes agregar al menos un producto al carrito para proceder al pago.');
+        return;
+      }
       openCheckoutModal();
     });
   }
@@ -818,6 +873,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (navHistoryBtn) {
     navHistoryBtn.addEventListener('click', (e) => {
       e.preventDefault();
+      e.stopPropagation();
       openHistoryModal();
     });
   }
