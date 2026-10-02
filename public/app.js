@@ -141,12 +141,20 @@ class CartState {
       if (stored) {
         this.items = JSON.parse(stored);
       } else {
-        // Inicializar con el primer smartphone de alta gama
-        this.items = [{ product: PRODUCTS[0], quantity: 1 }];
+        this.items = [];
       }
     } catch (e) {
-      this.items = [{ product: PRODUCTS[0], quantity: 1 }];
+      this.items = [];
     }
+  }
+
+  clearCart() {
+    this.items = [];
+    try {
+      localStorage.removeItem('evt_cart');
+    } catch (e) {}
+    this.saveToStorage();
+    this.notify();
   }
 
   saveToStorage() {
@@ -461,15 +469,25 @@ function openDetailModal(tx) {
   const body = document.getElementById('detail-modal-body');
   if (!modal || !overlay || !body) return;
 
-  const dateStr = new Date(tx.created_at).toLocaleString('es-CO', {
-    dateStyle: 'full',
-    timeStyle: 'medium'
-  });
-
-  const raw = tx.raw_payload || {};
+  let raw = tx.raw_payload;
+  if (typeof raw === 'string') {
+    try { raw = JSON.parse(raw); } catch (e) { raw = {}; }
+  }
+  raw = raw || {};
   const buyer = raw.buyer || {};
   const payment = raw.payment || {};
   const items = payment.items || [];
+
+  // Fecha y hora en horario oficial de Colombia (America/Bogota)
+  let dateRaw = raw.statusDate || tx.created_at;
+  if (typeof dateRaw === 'string' && !dateRaw.includes('T') && !dateRaw.includes('Z')) {
+    dateRaw = dateRaw.replace(' ', 'T') + 'Z';
+  }
+  const dateStr = new Date(dateRaw).toLocaleString('es-CO', {
+    timeZone: 'America/Bogota',
+    dateStyle: 'full',
+    timeStyle: 'medium'
+  });
 
   const subtotal = Math.round(tx.amount / 1.19);
   const tax = tx.amount - subtotal;
@@ -488,7 +506,7 @@ function openDetailModal(tx) {
         <h5 class="receipt-section-title">Información Transaccional</h5>
         <div class="receipt-grid">
           <div class="receipt-field">
-            <span class="field-title">Fecha y Hora:</span>
+            <span class="field-title">Fecha y Hora (Colombia):</span>
             <span class="field-value">${dateStr}</span>
           </div>
           <div class="receipt-field">
@@ -500,8 +518,16 @@ function openDetailModal(tx) {
             <span class="field-value">${tx.status_message || 'Transacción procesada'}</span>
           </div>
           <div class="receipt-field">
+            <span class="field-title">Cód. Autorización:</span>
+            <span class="field-value"><strong>${tx.authorization_code || raw.authorizationCode || 'N/A'}</strong></span>
+          </div>
+          <div class="receipt-field">
+            <span class="field-title">Recibo Bancario:</span>
+            <span class="field-value"><strong>${tx.receipt || raw.receipt || 'N/A'}</strong></span>
+          </div>
+          <div class="receipt-field">
             <span class="field-title">ID de Sesión:</span>
-            <span class="field-value"><code>${tx.session_id || 'N/A'}</code></span>
+            <span class="field-value"><code>${tx.session_id || raw.requestId || 'N/A'}</code></span>
           </div>
         </div>
       </div>
@@ -524,6 +550,14 @@ function openDetailModal(tx) {
           <div class="receipt-field">
             <span class="field-title">Teléfono Móvil:</span>
             <span class="field-value">${buyer.mobile || 'N/A'}</span>
+          </div>
+          <div class="receipt-field">
+            <span class="field-title">Dirección de Entrega:</span>
+            <span class="field-value">${buyer.address?.street || 'N/A'}</span>
+          </div>
+          <div class="receipt-field">
+            <span class="field-title">Ciudad:</span>
+            <span class="field-value">${buyer.address?.city || 'Bogotá D.C.'}</span>
           </div>
         </div>
       </div>
@@ -653,7 +687,19 @@ async function loadEvidences(filter = 'ALL') {
     }
 
     tbody.innerHTML = txs.map(tx => {
-      const dateStr = new Date(tx.created_at).toLocaleString('es-CO');
+      let raw = tx.raw_payload;
+      if (typeof raw === 'string') {
+        try { raw = JSON.parse(raw); } catch (e) { raw = {}; }
+      }
+      let dateRaw = raw?.statusDate || tx.created_at;
+      if (typeof dateRaw === 'string' && !dateRaw.includes('T') && !dateRaw.includes('Z')) {
+        dateRaw = dateRaw.replace(' ', 'T') + 'Z';
+      }
+      const dateStr = new Date(dateRaw).toLocaleString('es-CO', {
+        timeZone: 'America/Bogota',
+        dateStyle: 'short',
+        timeStyle: 'medium'
+      });
       const txEncoded = encodeURIComponent(JSON.stringify(tx));
       return `
         <tr>
@@ -778,6 +824,9 @@ function initCheckoutForm() {
           </div>
         `;
 
+        // Limpiar el carrito tras enviar la orden a Placetopay
+        cart.clearCart();
+
         // Redirección directa e inmediata a la URL de Placetopay
         window.location.href = result.processUrl;
 
@@ -839,6 +888,18 @@ document.addEventListener('DOMContentLoaded', () => {
   renderCart();
   initCheckoutForm();
   loadEvidences('ALL');
+
+  // Detección de Retorno desde Placetopay WebCheckout (?status=return o ?reference=...)
+  try {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('status') === 'return' || urlParams.has('reference')) {
+      cart.clearCart(); // Limpiar el carrito tras completar el pago
+      openHistoryModal(); // Abrir modal de evidencias con el estado sincronizado
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  } catch (e) {
+    console.error('Error al procesar retorno de pasarela:', e);
+  }
 
   // Evento Botón del Carrito en Header (resiliente)
   const cartToggleBtn = document.getElementById('cart-toggle-btn');
