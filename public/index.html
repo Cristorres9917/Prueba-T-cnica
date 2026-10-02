@@ -269,7 +269,7 @@
         <ul class="nav-list">
           <li><a href="#catalog-section" class="nav-link">Catálogo</a></li>
           <li><button id="nav-checkout-btn" class="nav-link nav-btn-link" aria-label="Abrir modal de Checkout">Checkout</button></li>
-          <li><a href="#evidences-section" id="nav-history-btn" class="nav-link">Historial</a></li>
+          <li><button id="nav-history-btn" class="nav-link nav-btn-link" aria-label="Abrir modal de Historial">Historial</button></li>
         </ul>
       </nav>
 
@@ -321,16 +321,20 @@
       </div>
     </section>
 
-    <!-- Visor de Evidencias e Historial Transaccional -->
-    <section id="evidences-section" class="evidences-section" aria-labelledby="evidences-title">
-      <div class="section-header">
-        <h2 id="evidences-title" class="section-title">Historial y Trazabilidad Transaccional (SQLite)</h2>
-        <p class="section-subtitle">
-          Auditoría en tiempo real de transacciones persistidas en SQLite con sus estados oficiales: 
-          <strong class="text-success">APROBADO</strong>, <strong class="text-warning">PENDIENTE</strong> y <strong class="text-danger">RECHAZADOS</strong>.
-        </p>
-      </div>
+  </main>
 
+  <!-- MODAL ACCESIBLE DE HISTORIAL Y EVIDENCIAS TRANSACCIONALES (No en el Body) -->
+  <div id="history-modal-overlay" class="modal-overlay" hidden style="display: none;"></div>
+  <div id="history-modal" class="modal-dialog modal-history-dialog" role="dialog" aria-modal="true" aria-labelledby="history-modal-title" hidden style="display: none;">
+    <div class="modal-header">
+      <div class="modal-title-group">
+        <h3 id="history-modal-title" class="modal-title">Historial y Trazabilidad Transaccional</h3>
+        <span class="modal-subtitle">Auditoría en tiempo real de transacciones persistidas en SQLite</span>
+      </div>
+      <button id="close-history-modal-btn" class="close-btn" aria-label="Cerrar ventana de historial">&times;</button>
+    </div>
+    
+    <div class="modal-body modal-history-body" id="evidences-section">
       <div class="evidences-filters" role="group" aria-label="Filtros de evidencias">
         <button class="filter-btn active" data-filter="ALL">Todos (<span id="count-all">0</span>)</button>
         <button class="filter-btn" data-filter="APPROVED">Aprobados (<span id="count-approved">0</span>)</button>
@@ -362,7 +366,7 @@
 
       <!-- Cuadro Explicativo de la Matriz de Rechazos -->
       <div class="taxonomy-info-box">
-        <h3 class="taxonomy-title">📋 Taxonomía de Causales de Rechazo Soportadas en Placetopay</h3>
+        <h4 class="taxonomy-title">📋 Taxonomía de Causales de Rechazo Soportadas en Placetopay</h4>
         <div class="taxonomy-grid">
           <div class="taxonomy-card">
             <span class="tax-tag">Banco Emisor (05)</span>
@@ -396,9 +400,8 @@
           </div>
         </div>
       </div>
-    </section>
-
-  </main>
+    </div>
+  </div>
 
   <!-- Drawer Lateral Accesible del Carrito -->
   <div id="cart-drawer-overlay" class="drawer-overlay" hidden style="display: none;"></div>

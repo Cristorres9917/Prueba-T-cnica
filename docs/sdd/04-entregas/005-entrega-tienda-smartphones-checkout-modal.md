@@ -14,12 +14,13 @@
 
 ## 2. Resumen Ejecutivo de Cambios y Logros
 En esta fase se transformó la tienda virtual Evertec PayShop conforme a las directrices comerciales y técnicas solicitadas por el usuario:
-1. **Catálogo de 12 Smartphones de Alta Gama:** Se sustituyeron los productos anteriores de terminales POS por 12 teléfonos insignia con especificaciones premium y precios reales de mercado en Colombia (> $3.000.000 COP), acompañados de marcado estructurado JSON-LD Schema.org.
-2. **Resiliencia en el Carrito de Compras:** Se corrigió el botón `#cart-toggle-btn` implementando `pointer-events: none` en elementos hijos (`.cart-btn *`), garantizando el despliegue confiable del drawer lateral.
-3. **Checkout Encapsulado en Modal Flotante:** Se retiró el formulario incrustado en el cuerpo de la página (`#checkout-section`). Ahora, al hacer clic en "Ir a Pagar" desde el carrito, se abre de inmediato un modal interactivo accesible (`#checkout-modal`) con resumen compacto y foco automático en los datos del comprador.
-4. **Pasarela 100% WebCheckout Transparente:** Se eliminaron de la interfaz el selector de canales (`WEBCHECKOUT` vs `GATEWAY_DIRECT`) y los campos de captura directa de tarjetas. El cliente no escoge el canal; por debajo el sistema despacha directamente a Placetopay WebCheckout (`/api/checkout/session`) retornando la URL de redirección oficial (`processUrl`).
-5. **Navegación e Historial de Trazabilidad:** Se incorporó el botón/enlace "Historial" en la barra de navegación superior apuntando a la auditoría SQLite.
-6. **Tabla de Evidencias Simplificada y Modal "Ver Detalle":**
+1. **Catálogo de 12 Smartphones de Alta Gama con Fotos Reales:** Se sustituyeron los productos anteriores por 12 teléfonos insignia con especificaciones premium, precios reales de mercado en Colombia (> $3.000.000 COP), fotografías reales de producto con fallback resiliente, y marcado estructurado JSON-LD Schema.org.
+2. **Botones de Añadir Uniformes y Alineados:** Se aplicó alineación flexbox a las tarjetas (`display: flex; flex-direction: column; height: 100%`) con alturas mínimas para título y descripción, `margin-top: auto` en el footer y ancho mínimo homogéneo en `.btn-add-cart`, garantizando que todos los botones queden perfectamente alineados y del mismo tamaño sin importar la longitud de los textos.
+3. **Resiliencia en el Carrito de Compras:** Se corrigió el botón `#cart-toggle-btn` implementando `pointer-events: none` en elementos hijos (`.cart-btn *`), garantizando el despliegue confiable del drawer lateral.
+4. **Checkout Encapsulado en Modal Flotante y Redirección Directa:** Se retiró el formulario incrustado en el cuerpo de la página (`#checkout-section`). Ahora, al hacer clic en "Ir a Pagar" desde el carrito, se abre un modal interactivo accesible (`#checkout-modal`) con resumen compacto. Al enviar el formulario, el sistema genera la sesión en Placetopay y **redirige directamente** al pagador a la pasarela (`window.location.href = result.processUrl`).
+5. **Pasarela 100% WebCheckout Transparente:** Se eliminaron de la interfaz el selector de canales (`WEBCHECKOUT` vs `GATEWAY_DIRECT`) y los campos de captura directa de tarjetas. El cliente no escoge el canal; por debajo el sistema despacha directamente a Placetopay WebCheckout.
+6. **Historial en Modal Accesible (No en Body):** El botón "Historial" en la barra de navegación superior ahora abre un modal flotante completo (`#history-modal` y `#history-modal-overlay`) con la tabla de auditoría de pagos en SQLite y la taxonomía de rechazos, manteniendo la vista principal limpia.
+7. **Tabla de Evidencias Simplificada y Modal "Ver Detalle":**
    - Se eliminaron las columnas técnicas `Canal` y `Razón`, dejando una tabla limpia de 6 columnas.
    - Se reemplazó el botón "Ver JSON" por un botón **"Ver Detalle"** (`btn-view-detail`) que despliega un modal institucional con recibo de compra estructurado (datos del pagador, fecha, desglose financiero) y un acordeón colapsable para inspección técnica de auditoría.
 
@@ -30,13 +31,13 @@ En esta fase se transformó la tienda virtual Evertec PayShop conforme a las dir
 | ID Test | Descripción de la Prueba | Resultado |
 | :--- | :--- | :--- |
 | **TEST-5.1** | Aislamiento estricto en rama activa de spec (`feat/spec-005-*`) | **PASS** |
-| **TEST-5.2** | Catálogo de 12 smartphones de alta gama en `app.js` con precios reales en COP | **PASS** |
+| **TEST-5.2** | Catálogo de 12 smartphones de alta gama en `app.js` con fotos reales y precios en COP | **PASS** |
 | **TEST-5.3** | Marcado Estructurado JSON-LD Schema.org con los 12 smartphones en `index.html` | **PASS** |
 | **TEST-5.4** | Resiliencia del botón del carrito con `pointer-events: none` en hijos | **PASS** |
 | **TEST-5.5** | Checkout encapsulado en modal flotante accesible (`#checkout-modal`) sin sección en body | **PASS** |
 | **TEST-5.6** | Canal Placetopay transparente (sin selector de canales ni campos de tarjeta en UI) | **PASS** |
 | **TEST-5.7** | Flujo completo de sesión WebCheckout con almacenamiento enriquecido en SQLite | **PASS** |
-| **TEST-5.8** | Barra de navegación incluye enlace/botón de Historial (`#nav-history-btn`) | **PASS** |
+| **TEST-5.8** | Historial desplegado en modal accesible (`#history-modal`) accionado desde `#nav-history-btn` y redirección directa | **PASS** |
 | **TEST-5.9** | Tabla de evidencias simplificada a 6 columnas (eliminadas Canal y Razón) | **PASS** |
 | **TEST-5.10** | Botón "Ver Detalle" y Modal de Recibo Estructurado con datos del comprador | **PASS** |
 

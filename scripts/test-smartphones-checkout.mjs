@@ -65,7 +65,7 @@ await assertTest('TEST-5.2', 'Catálogo de 12 smartphones de alta gama en app.js
   }
 
   for (const prod of products) {
-    if (!prod.id || !prod.sku || !prod.name || !prod.category || !prod.desc || !prod.icon) {
+    if (!prod.id || !prod.sku || !prod.name || !prod.category || !prod.desc || !prod.icon || !prod.image) {
       throw new Error(`Producto ${prod.name || 'desconocido'} tiene campos incompletos`);
     }
     if (typeof prod.price !== 'number' || prod.price < 3000000) {
@@ -232,15 +232,28 @@ await assertTest('TEST-5.7', 'Flujo completo de sesión WebCheckout con almacena
   }
 });
 
-// TEST-5.8: Navegación superior incluye botón de "Historial"
-await assertTest('TEST-5.8', 'Barra de navegación incluye enlace/botón de Historial (#nav-history-btn)', () => {
+// TEST-5.8: Botón de "Historial" en navegación y encapsulamiento en modal (#history-modal)
+await assertTest('TEST-5.8', 'Historial desplegado en modal accesible (#history-modal) accionado desde #nav-history-btn', () => {
   const html = fs.readFileSync(path.join(rootDir, 'public', 'index.html'), 'utf8');
+  const appJs = fs.readFileSync(path.join(rootDir, 'public', 'app.js'), 'utf8');
 
-  if (!html.includes('id="nav-history-btn"') || !html.includes('href="#evidences-section"')) {
-    throw new Error('Falta enlace #nav-history-btn apuntando a #evidences-section');
+  if (!html.includes('id="nav-history-btn"')) {
+    throw new Error('Falta botón #nav-history-btn en navegación');
   }
-  if (!html.includes('Historial</a>')) {
+  if (!html.includes('Historial</button>')) {
     throw new Error('El texto del botón de navegación debe ser explícitamente "Historial"');
+  }
+  if (!html.includes('id="history-modal"') || !html.includes('id="history-modal-overlay"')) {
+    throw new Error('Falta modal #history-modal o su overlay en HTML');
+  }
+  if (!html.includes('role="dialog"') || !html.includes('aria-modal="true"')) {
+    throw new Error('El modal de historial carece de roles de accesibilidad ARIA');
+  }
+  if (!appJs.includes('openHistoryModal') || !appJs.includes('closeHistoryModal')) {
+    throw new Error('Faltan las funciones openHistoryModal / closeHistoryModal en app.js');
+  }
+  if (!appJs.includes('window.location.href = result.processUrl')) {
+    throw new Error('Falta redirección directa a la pasarela Placetopay al confirmar el pago');
   }
 });
 

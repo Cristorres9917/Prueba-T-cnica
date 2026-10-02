@@ -4,7 +4,7 @@
  * Spec-05: Tienda de Smartphones de Gama Alta, Checkout Modal y WebCheckout Transparente
  */
 
-// 1. Catálogo Oficial de 12 Smartphones de Gama Alta con Precios Reales COP
+// 1. Catálogo Oficial de 12 Smartphones de Gama Alta con Fotos Reales y Precios COP
 const PRODUCTS = [
   {
     id: 'prod-001',
@@ -13,6 +13,7 @@ const PRODUCTS = [
     category: 'iOS Flagship',
     price: 6499000,
     desc: '256 GB, Titanio del Desierto, Pantalla Super Retina XDR 6.9", Chip A18 Pro y Cámara Fusion 48MP.',
+    image: 'https://upload.wikimedia.org/wikipedia/commons/e/e2/IPhone_16_Pro_Max_Desert_Titanium_Rear.png',
     icon: `<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#FF5900" stroke-width="1.8" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="3"></rect><circle cx="12" cy="5" r="0.75" fill="#FF5900"></circle><line x1="10" y1="20" x2="14" y2="20" stroke-linecap="round"></line><rect x="7" y="6" width="10" height="11" rx="1" fill="#FF5900" fill-opacity="0.08"></rect></svg>`
   },
   {
@@ -22,6 +23,7 @@ const PRODUCTS = [
     category: 'Android Flagship',
     price: 5899000,
     desc: '512 GB, Titanium Gray, Pantalla Dynamic AMOLED 2X 6.8", Snapdragon 8 Gen 3 y Galaxy AI.',
+    image: 'https://upload.wikimedia.org/wikipedia/commons/e/ed/Samsung_S24_Ultra_Phone.png',
     icon: `<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#0077CC" stroke-width="1.8" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2"></rect><circle cx="12" cy="4.5" r="0.6" fill="#0077CC"></circle><line x1="8" y1="20" x2="16" y2="20"></line><circle cx="16" cy="18" r="0.75" fill="#0077CC"></circle></svg>`
   },
   {
@@ -31,6 +33,7 @@ const PRODUCTS = [
     category: 'Plegable Premium',
     price: 7999000,
     desc: '256 GB, Silver Shadow, Pantalla Plegable 7.6" Dynamic AMOLED 120Hz y Bisagra Armor Aluminum.',
+    image: 'https://images.unsplash.com/photo-1580910051074-3eb694886505?auto=format&fit=crop&w=600&q=80',
     icon: `<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#0B192C" stroke-width="1.8" aria-hidden="true"><rect x="3" y="3" width="8" height="18" rx="1.5"></rect><rect x="13" y="3" width="8" height="18" rx="1.5"></rect><line x1="11" y1="4" x2="11" y2="20" stroke="#FF5900" stroke-width="1.5"></line></svg>`
   },
   {
@@ -40,6 +43,7 @@ const PRODUCTS = [
     category: 'AI Phone',
     price: 4990000,
     desc: '256 GB, Obsidian, Pantalla Super Actua 6.8", Procesador Google Tensor G4 y Gemini Nano con IA nativa.',
+    image: 'https://images.unsplash.com/photo-1598327105666-5b89351aff97?auto=format&fit=crop&w=600&q=80',
     icon: `<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#166534" stroke-width="1.8" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="3"></rect><rect x="6" y="5" width="12" height="3" rx="1.5" fill="#166534" fill-opacity="0.15"></rect><circle cx="9" cy="6.5" r="0.7" fill="#166534"></circle><circle cx="12" cy="6.5" r="0.7" fill="#166534"></circle></svg>`
   },
   {
@@ -49,6 +53,7 @@ const PRODUCTS = [
     category: 'Fotografía Pro',
     price: 5199000,
     desc: '512 GB, Black Ceramic, Sensor de 1 pulgada Leica Quad 50MP, Snapdragon 8 Gen 3 y Carga 90W.',
+    image: 'https://images.unsplash.com/photo-1511707171634-5f897ff02560?auto=format&fit=crop&w=600&q=80',
     icon: `<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#D97706" stroke-width="1.8" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="3"></rect><circle cx="12" cy="9" r="4" stroke="#D97706" stroke-width="1.5"></circle><circle cx="12" cy="9" r="1.5" fill="#D97706"></circle></svg>`
   },
   {
@@ -58,6 +63,7 @@ const PRODUCTS = [
     category: 'Android Flagship',
     price: 4799000,
     desc: '512 GB, Epi Green, Cámara Telefoto 180MP, Pantalla LTPO Curved 5000 nits y Batería 5600mAh.',
+    image: 'https://images.unsplash.com/photo-1565849904461-04a58ad377e0?auto=format&fit=crop&w=600&q=80',
     icon: `<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="1.8" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="3"></rect><circle cx="12" cy="8.5" r="3.2" stroke="#059669"></circle><path d="M10 8h4M12 6v4" stroke="#059669"></path></svg>`
   },
   {
@@ -67,6 +73,7 @@ const PRODUCTS = [
     category: 'Rendimiento Puro',
     price: 4299000,
     desc: '512 GB, Silky Black, Pantalla 2K ProXDR 120Hz, Hasselblad Gen 4 y Carga 100W SUPERVOOC.',
+    image: 'https://images.unsplash.com/photo-1546868871-7041f2a55e12?auto=format&fit=crop&w=600&q=80',
     icon: `<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#DC2626" stroke-width="1.8" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="3"></rect><path d="M7 6h10v10H7z" stroke-dasharray="1.5 1.5"></path><circle cx="12" cy="11" r="2.5"></circle></svg>`
   },
   {
@@ -76,6 +83,7 @@ const PRODUCTS = [
     category: 'Gaming Flagship',
     price: 5699000,
     desc: '512 GB, Phantom Black, Pantalla AMOLED 165Hz, Sistema GameCool 8 y Botones AirTrigger.',
+    image: 'https://images.unsplash.com/photo-1533228896884-6a8f9312804b?auto=format&fit=crop&w=600&q=80',
     icon: `<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" stroke-width="1.8" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="3"></rect><path d="M8 8l4 4-4 4M16 8l-4 4 4 4" stroke-linecap="round"></path></svg>`
   },
   {
@@ -85,6 +93,7 @@ const PRODUCTS = [
     category: 'Diseño Exclusivo',
     price: 3899000,
     desc: '512 GB, Nordic Wood en madera real, Pantalla pOLED 144Hz, Moto AI y Cámara Teleobjetivo 64MP.',
+    image: 'https://images.unsplash.com/photo-1574944985070-8f3ebc6b79d2?auto=format&fit=crop&w=600&q=80',
     icon: `<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#9A3412" stroke-width="1.8" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="3"></rect><line x1="8" y1="7" x2="16" y2="7"></line><line x1="8" y1="11" x2="16" y2="11"></line><line x1="8" y1="15" x2="14" y2="15"></line></svg>`
   },
   {
@@ -94,6 +103,7 @@ const PRODUCTS = [
     category: 'Cinematografía',
     price: 5890000,
     desc: '256 GB, Platinum Silver, Zoom Óptico Continuo 85-170mm, Pantalla OLED BRAVIA Engine y Audio Hi-Res.',
+    image: 'https://images.unsplash.com/photo-1585060544812-6b45742d762f?auto=format&fit=crop&w=600&q=80',
     icon: `<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#4B5563" stroke-width="1.8" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="2"></rect><circle cx="12" cy="7" r="1.5"></circle><circle cx="12" cy="11" r="1.5"></circle><circle cx="12" cy="15" r="1.5"></circle></svg>`
   },
   {
@@ -103,6 +113,7 @@ const PRODUCTS = [
     category: 'Fotografía Pro',
     price: 4650000,
     desc: '512 GB, Asteroid Black, Óptica ZEISS APO Telefoto, Chip de Imagen V3 y MediaTek Dimensity 9300.',
+    image: 'https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?auto=format&fit=crop&w=600&q=80',
     icon: `<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#0284C7" stroke-width="1.8" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="3"></rect><circle cx="12" cy="8" r="3"></circle><circle cx="12" cy="8" r="1" fill="#0284C7"></circle></svg>`
   },
   {
@@ -112,6 +123,7 @@ const PRODUCTS = [
     category: 'iOS Flagship',
     price: 4699000,
     desc: '128 GB, Ultramarine, Pantalla Super Retina XDR OLED 6.7", Control de Cámara háptico y Chip A18.',
+    image: 'https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?auto=format&fit=crop&w=600&q=80',
     icon: `<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="1.8" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="3"></rect><circle cx="12" cy="5" r="0.75" fill="#2563EB"></circle><rect x="8" y="7" width="8" height="10" rx="1.5" stroke="#2563EB" stroke-width="1.2"></rect></svg>`
   }
 ];
@@ -201,7 +213,7 @@ function formatCOP(amount) {
   }).format(amount);
 }
 
-// 4. Renderizado del Catálogo de 12 Smartphones
+// 4. Renderizado del Catálogo de 12 Smartphones con Botones Uniformes
 function renderCatalog() {
   const container = document.getElementById('products-grid');
   if (!container) return;
@@ -212,8 +224,11 @@ function renderCatalog() {
         <span class="sku-tag">${product.sku}</span>
         <span class="category-tag">${product.category}</span>
       </div>
-      <div class="product-icon-wrap" aria-hidden="true">
-        ${product.icon}
+      <div class="product-image-wrap">
+        <img src="${product.image}" alt="${product.name}" class="product-real-img" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div class="product-icon-wrap" style="display:none;" aria-hidden="true">
+          ${product.icon}
+        </div>
       </div>
       <h3 id="title-${product.id}" class="product-title">${product.name}</h3>
       <p class="product-desc">${product.desc}</p>
@@ -341,6 +356,7 @@ function closeCartDrawer() {
 
 function openCheckoutModal() {
   closeCartDrawer();
+  closeHistoryModal();
   const modal = document.getElementById('checkout-modal');
   const overlay = document.getElementById('checkout-modal-overlay');
   if (modal && overlay) {
@@ -356,6 +372,34 @@ function openCheckoutModal() {
 function closeCheckoutModal() {
   const modal = document.getElementById('checkout-modal');
   const overlay = document.getElementById('checkout-modal-overlay');
+  if (modal && overlay) {
+    modal.hidden = true;
+    overlay.hidden = true;
+    modal.style.display = 'none';
+    overlay.style.display = 'none';
+  }
+}
+
+// Modal de Historial y Evidencias Transaccionales (SQLite)
+function openHistoryModal() {
+  closeCartDrawer();
+  closeCheckoutModal();
+  loadEvidences('ALL');
+  const modal = document.getElementById('history-modal');
+  const overlay = document.getElementById('history-modal-overlay');
+  if (modal && overlay) {
+    modal.hidden = false;
+    overlay.hidden = false;
+    modal.style.display = 'flex';
+    overlay.style.display = 'block';
+    const closeBtn = document.getElementById('close-history-modal-btn');
+    if (closeBtn) closeBtn.focus();
+  }
+}
+
+function closeHistoryModal() {
+  const modal = document.getElementById('history-modal');
+  const overlay = document.getElementById('history-modal-overlay');
   if (modal && overlay) {
     modal.hidden = true;
     overlay.hidden = true;
@@ -599,7 +643,7 @@ async function loadEvidences(filter = 'ALL') {
   }
 }
 
-// 8. Manejador del Formulario de Pago (100% WebCheckout Transparente)
+// 8. Manejador del Formulario de Pago (Redirección Directa a Placetopay)
 function initCheckoutForm() {
   const form = document.getElementById('checkout-form');
   const feedback = document.getElementById('checkout-feedback');
@@ -669,7 +713,7 @@ function initCheckoutForm() {
     // Estado de carga en el botón
     submitBtn.disabled = true;
     spinner.hidden = false;
-    btnText.textContent = 'Generando sesión Placetopay...';
+    btnText.textContent = 'Transfiriendo a Placetopay...';
 
     try {
       const res = await fetch('/api/checkout/session', {
@@ -682,29 +726,28 @@ function initCheckoutForm() {
       if (result.success && result.processUrl) {
         feedback.innerHTML = `
           <div class="alert-box alert-success" style="background:#ECFDF5; border-color:#10B981; color:#065F46;">
-            <strong>✅ Sesión WebCheckout Creada con Éxito (RequestId: ${result.requestId})</strong>
-            <p style="margin: 0.5rem 0;">Tu orden ha sido registrada. Haz clic a continuación para ser redirigido a la pasarela bancaria oficial de Placetopay Evertec:</p>
-            <div style="margin-top:0.85rem; display:flex; gap:0.75rem; flex-wrap:wrap;">
-              <a href="${result.processUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm">
-                Ir a Pagar en Placetopay WebCheckout &rarr;
-              </a>
-              <button type="button" class="btn btn-secondary btn-sm" onclick="checkWebcheckoutStatus(${result.requestId})">
-                Consultar Estado
-              </button>
-            </div>
+            <strong>✅ Redirigiendo a Placetopay WebCheckout...</strong>
+            <p style="margin: 0.5rem 0;">Sesión creada con éxito (RequestId: ${result.requestId}). Redirigiendo automáticamente a la pasarela bancaria oficial...</p>
+            <div class="spinner" style="margin: 0.75rem auto; border-top-color: #065F46;" aria-hidden="true"></div>
           </div>
         `;
+
+        // Redirección directa e inmediata a la URL de Placetopay
+        window.location.href = result.processUrl;
+
       } else {
         feedback.innerHTML = `<div class="alert-box alert-danger"><strong>Error WebCheckout:</strong> ${result.error || 'No se pudo generar la sesión de pago.'}</div>`;
+        submitBtn.disabled = false;
+        spinner.hidden = true;
+        btnText.innerHTML = `Pagar <strong id="btn-amount">${formatCOP(totalAmount)}</strong>`;
       }
 
-      // Recargar visor de evidencias inmediatamente
+      // Recargar visor de evidencias en segundo plano
       await loadEvidences('ALL');
 
     } catch (err) {
       console.error('[CHECKOUT SUBMIT ERROR]', err);
       feedback.innerHTML = `<div class="alert-box alert-danger">Error al conectar con la pasarela: ${err.message}</div>`;
-    } finally {
       submitBtn.disabled = false;
       spinner.hidden = true;
       btnText.innerHTML = `Pagar <strong id="btn-amount">${formatCOP(totalAmount)}</strong>`;
@@ -729,6 +772,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Asegurar que modales y drawer inicien cerrados
   closeCartDrawer();
   closeCheckoutModal();
+  closeHistoryModal();
   closeDetailModal();
   closePayloadModal();
 
@@ -769,6 +813,21 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Botón Historial en el Nav: Abre el Modal de Historial
+  const navHistoryBtn = document.getElementById('nav-history-btn');
+  if (navHistoryBtn) {
+    navHistoryBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      openHistoryModal();
+    });
+  }
+
+  // Eventos de Cierre del Modal de Historial
+  const closeHistoryBtn = document.getElementById('close-history-modal-btn');
+  const historyOverlay = document.getElementById('history-modal-overlay');
+  if (closeHistoryBtn) closeHistoryBtn.addEventListener('click', closeHistoryModal);
+  if (historyOverlay) historyOverlay.addEventListener('click', closeHistoryModal);
+
   // Eventos de Cierre del Modal de Checkout
   const closeCheckoutBtn = document.getElementById('close-checkout-modal-btn');
   const checkoutOverlay = document.getElementById('checkout-modal-overlay');
@@ -792,6 +851,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.key === 'Escape') {
       closeCartDrawer();
       closeCheckoutModal();
+      closeHistoryModal();
       closeDetailModal();
       closePayloadModal();
     }
