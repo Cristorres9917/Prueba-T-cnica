@@ -1,49 +1,122 @@
 /**
  * Evertec PayShop — Lógica Reactiva Frontend & Integración Placetopay
  * Metodología: Spec-Driven Development (SDD) | WCAG 2.1 AA Compliant
+ * Spec-05: Tienda de Smartphones de Gama Alta, Checkout Modal y WebCheckout Transparente
  */
 
-// 1. Catálogo Oficial de Productos Tecnológicos Evertec
+// 1. Catálogo Oficial de 12 Smartphones de Gama Alta con Precios Reales COP
 const PRODUCTS = [
   {
     id: 'prod-001',
-    sku: 'EVT-POS-001',
-    name: 'Terminal POS Evertec SmartPay Pro',
-    category: 'Hardware POS',
-    price: 350000,
-    desc: 'Terminal inteligente de alta velocidad para tarjetas de crédito y débito, pantalla táctil e impresora térmica.',
-    icon: `<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#FF5900" stroke-width="1.8" aria-hidden="true"><rect x="4" y="2" width="16" height="20" rx="2"></rect><line x1="8" y1="6" x2="16" y2="6"></line><line x1="16" y1="14" x2="16" y2="18"></line><path d="M8 10h.01M12 10h.01M16 10h.01M8 14h.01M12 14h.01M8 18h.01M12 18h.01"></path></svg>`
+    sku: 'APL-IP16PM-256',
+    name: 'Apple iPhone 16 Pro Max',
+    category: 'iOS Flagship',
+    price: 6499000,
+    desc: '256 GB, Titanio del Desierto, Pantalla Super Retina XDR 6.9", Chip A18 Pro y Cámara Fusion 48MP.',
+    icon: `<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#FF5900" stroke-width="1.8" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="3"></rect><circle cx="12" cy="5" r="0.75" fill="#FF5900"></circle><line x1="10" y1="20" x2="14" y2="20" stroke-linecap="round"></line><rect x="7" y="6" width="10" height="11" rx="1" fill="#FF5900" fill-opacity="0.08"></rect></svg>`
   },
   {
     id: 'prod-002',
-    sku: 'EVT-PIN-002',
-    name: 'Lector PinPad Mobile Evertec Contactless',
-    category: 'Mobile Payments',
-    price: 180000,
-    desc: 'Dispositivo ultra-portátil Bluetooth para cobros rápidos con tecnología chip y sin contacto (NFC).',
-    icon: `<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#0077CC" stroke-width="1.8" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2"></rect><circle cx="12" cy="17" r="1"></circle><path d="M9 6h6M9 10h6"></path></svg>`
+    sku: 'SAM-S24U-512',
+    name: 'Samsung Galaxy S24 Ultra',
+    category: 'Android Flagship',
+    price: 5899000,
+    desc: '512 GB, Titanium Gray, Pantalla Dynamic AMOLED 2X 6.8", Snapdragon 8 Gen 3 y Galaxy AI.',
+    icon: `<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#0077CC" stroke-width="1.8" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2"></rect><circle cx="12" cy="4.5" r="0.6" fill="#0077CC"></circle><line x1="8" y1="20" x2="16" y2="20"></line><circle cx="16" cy="18" r="0.75" fill="#0077CC"></circle></svg>`
   },
   {
     id: 'prod-003',
-    sku: 'EVT-GTW-003',
-    name: 'Gateway E-Commerce Token Pro (Anual)',
-    category: 'Software & API',
-    price: 520000,
-    desc: 'Integración API Gateway con tokenización segura, módulo antifraude Cybersource y recurrencia.',
-    icon: `<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#166534" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>`
+    sku: 'SAM-ZFOLD6-256',
+    name: 'Samsung Galaxy Z Fold6',
+    category: 'Plegable Premium',
+    price: 7999000,
+    desc: '256 GB, Silver Shadow, Pantalla Plegable 7.6" Dynamic AMOLED 120Hz y Bisagra Armor Aluminum.',
+    icon: `<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#0B192C" stroke-width="1.8" aria-hidden="true"><rect x="3" y="3" width="8" height="18" rx="1.5"></rect><rect x="13" y="3" width="8" height="18" rx="1.5"></rect><line x1="11" y1="4" x2="11" y2="20" stroke="#FF5900" stroke-width="1.5"></line></svg>`
   },
   {
     id: 'prod-004',
-    sku: 'EVT-BIO-004',
-    name: 'Lector Biométrico de Seguridad Financiera',
-    category: 'Seguridad',
-    price: 290000,
-    desc: 'Lector biométrico de huella dactilar certificado para autenticación reforzada y prevención de suplantación.',
-    icon: `<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#854D0E" stroke-width="1.8" aria-hidden="true"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"></path></svg>`
+    sku: 'GGL-PX9PXL-256',
+    name: 'Google Pixel 9 Pro XL',
+    category: 'AI Phone',
+    price: 4990000,
+    desc: '256 GB, Obsidian, Pantalla Super Actua 6.8", Procesador Google Tensor G4 y Gemini Nano con IA nativa.',
+    icon: `<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#166534" stroke-width="1.8" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="3"></rect><rect x="6" y="5" width="12" height="3" rx="1.5" fill="#166534" fill-opacity="0.15"></rect><circle cx="9" cy="6.5" r="0.7" fill="#166534"></circle><circle cx="12" cy="6.5" r="0.7" fill="#166534"></circle></svg>`
+  },
+  {
+    id: 'prod-005',
+    sku: 'XIA-14U-512',
+    name: 'Xiaomi 14 Ultra Leica',
+    category: 'Fotografía Pro',
+    price: 5199000,
+    desc: '512 GB, Black Ceramic, Sensor de 1 pulgada Leica Quad 50MP, Snapdragon 8 Gen 3 y Carga 90W.',
+    icon: `<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#D97706" stroke-width="1.8" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="3"></rect><circle cx="12" cy="9" r="4" stroke="#D97706" stroke-width="1.5"></circle><circle cx="12" cy="9" r="1.5" fill="#D97706"></circle></svg>`
+  },
+  {
+    id: 'prod-006',
+    sku: 'HNR-MGK6P-512',
+    name: 'Honor Magic6 Pro',
+    category: 'Android Flagship',
+    price: 4799000,
+    desc: '512 GB, Epi Green, Cámara Telefoto 180MP, Pantalla LTPO Curved 5000 nits y Batería 5600mAh.',
+    icon: `<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="1.8" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="3"></rect><circle cx="12" cy="8.5" r="3.2" stroke="#059669"></circle><path d="M10 8h4M12 6v4" stroke="#059669"></path></svg>`
+  },
+  {
+    id: 'prod-007',
+    sku: 'OPL-12-512',
+    name: 'OnePlus 12 Pro Edition',
+    category: 'Rendimiento Puro',
+    price: 4299000,
+    desc: '512 GB, Silky Black, Pantalla 2K ProXDR 120Hz, Hasselblad Gen 4 y Carga 100W SUPERVOOC.',
+    icon: `<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#DC2626" stroke-width="1.8" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="3"></rect><path d="M7 6h10v10H7z" stroke-dasharray="1.5 1.5"></path><circle cx="12" cy="11" r="2.5"></circle></svg>`
+  },
+  {
+    id: 'prod-008',
+    sku: 'ASU-ROG8P-512',
+    name: 'ASUS ROG Phone 8 Pro',
+    category: 'Gaming Flagship',
+    price: 5699000,
+    desc: '512 GB, Phantom Black, Pantalla AMOLED 165Hz, Sistema GameCool 8 y Botones AirTrigger.',
+    icon: `<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" stroke-width="1.8" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="3"></rect><path d="M8 8l4 4-4 4M16 8l-4 4 4 4" stroke-linecap="round"></path></svg>`
+  },
+  {
+    id: 'prod-009',
+    sku: 'MOT-ED50U-512',
+    name: 'Motorola Edge 50 Ultra',
+    category: 'Diseño Exclusivo',
+    price: 3899000,
+    desc: '512 GB, Nordic Wood en madera real, Pantalla pOLED 144Hz, Moto AI y Cámara Teleobjetivo 64MP.',
+    icon: `<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#9A3412" stroke-width="1.8" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="3"></rect><line x1="8" y1="7" x2="16" y2="7"></line><line x1="8" y1="11" x2="16" y2="11"></line><line x1="8" y1="15" x2="14" y2="15"></line></svg>`
+  },
+  {
+    id: 'prod-010',
+    sku: 'SNY-XP1VI-256',
+    name: 'Sony Xperia 1 VI',
+    category: 'Cinematografía',
+    price: 5890000,
+    desc: '256 GB, Platinum Silver, Zoom Óptico Continuo 85-170mm, Pantalla OLED BRAVIA Engine y Audio Hi-Res.',
+    icon: `<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#4B5563" stroke-width="1.8" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="2"></rect><circle cx="12" cy="7" r="1.5"></circle><circle cx="12" cy="11" r="1.5"></circle><circle cx="12" cy="15" r="1.5"></circle></svg>`
+  },
+  {
+    id: 'prod-011',
+    sku: 'VIV-X100P-512',
+    name: 'Vivo X100 Pro Zeiss',
+    category: 'Fotografía Pro',
+    price: 4650000,
+    desc: '512 GB, Asteroid Black, Óptica ZEISS APO Telefoto, Chip de Imagen V3 y MediaTek Dimensity 9300.',
+    icon: `<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#0284C7" stroke-width="1.8" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="3"></rect><circle cx="12" cy="8" r="3"></circle><circle cx="12" cy="8" r="1" fill="#0284C7"></circle></svg>`
+  },
+  {
+    id: 'prod-012',
+    sku: 'APL-IP16PL-128',
+    name: 'Apple iPhone 16 Plus',
+    category: 'iOS Flagship',
+    price: 4699000,
+    desc: '128 GB, Ultramarine, Pantalla Super Retina XDR OLED 6.7", Control de Cámara háptico y Chip A18.',
+    icon: `<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="1.8" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="3"></rect><circle cx="12" cy="5" r="0.75" fill="#2563EB"></circle><rect x="8" y="7" width="8" height="10" rx="1.5" stroke="#2563EB" stroke-width="1.2"></rect></svg>`
   }
 ];
 
-// 2. Estado Reactivo del Carrito
+// 2. Estado Reactivo del Carrito de Compras
 class CartState {
   constructor() {
     this.items = [];
@@ -56,7 +129,7 @@ class CartState {
       if (stored) {
         this.items = JSON.parse(stored);
       } else {
-        // Inicializar con 1 producto para demostración fluida
+        // Inicializar con el primer smartphone de alta gama
         this.items = [{ product: PRODUCTS[0], quantity: 1 }];
       }
     } catch (e) {
@@ -114,7 +187,6 @@ class CartState {
 
   notify() {
     renderCart();
-    renderSummary();
   }
 }
 
@@ -129,34 +201,7 @@ function formatCOP(amount) {
   }).format(amount);
 }
 
-// 4. Algoritmo de Luhn y Detección de Franquicia
-function detectCardBrand(number) {
-  const clean = number.replace(/\D/g, '');
-  if (/^4/.test(clean)) return 'VISA';
-  if (/^(5[1-5]|2[2-7])/.test(clean)) return 'MASTERCARD';
-  if (/^3[47]/.test(clean)) return 'AMEX';
-  if (/^3(0[0-5]|[68])/.test(clean)) return 'DINERS';
-  return 'TARJETA';
-}
-
-function validateLuhn(number) {
-  const clean = number.replace(/\D/g, '');
-  if (clean.length < 13) return false;
-  let sum = 0;
-  let shouldDouble = false;
-  for (let i = clean.length - 1; i >= 0; i--) {
-    let digit = parseInt(clean.charAt(i), 10);
-    if (shouldDouble) {
-      digit *= 2;
-      if (digit > 9) digit -= 9;
-    }
-    sum += digit;
-    shouldDouble = !shouldDouble;
-  }
-  return (sum % 10) === 0;
-}
-
-// 5. Renderizado del Catálogo de Productos
+// 4. Renderizado del Catálogo de 12 Smartphones
 function renderCatalog() {
   const container = document.getElementById('products-grid');
   if (!container) return;
@@ -165,9 +210,9 @@ function renderCatalog() {
     <article class="product-card" aria-labelledby="title-${product.id}">
       <div class="product-badge-row">
         <span class="sku-tag">${product.sku}</span>
-        <span class="stock-tag">En Stock</span>
+        <span class="category-tag">${product.category}</span>
       </div>
-      <div class="product-icon-wrap">
+      <div class="product-icon-wrap" aria-hidden="true">
         ${product.icon}
       </div>
       <h3 id="title-${product.id}" class="product-title">${product.name}</h3>
@@ -183,7 +228,7 @@ function renderCatalog() {
 
   // Vincular eventos de adición
   container.querySelectorAll('.btn-add-cart').forEach(btn => {
-    btn.addEventListener('click', (e) => {
+    btn.addEventListener('click', () => {
       const prodId = btn.getAttribute('data-id');
       cart.addItem(prodId);
       openCartDrawer();
@@ -191,7 +236,7 @@ function renderCatalog() {
   });
 }
 
-// 6. Renderizado del Carrito Lateral y Resumen
+// 5. Renderizado del Carrito Lateral y Sincronización con Modal de Checkout
 function renderCart() {
   const { totalItems, totalAmount } = cart.getTotals();
   
@@ -208,72 +253,62 @@ function renderCart() {
   const drawerTotal = document.getElementById('drawer-total-amount');
   if (drawerTotal) drawerTotal.textContent = formatCOP(totalAmount);
 
-  if (!container) return;
+  if (container) {
+    if (cart.items.length === 0) {
+      container.innerHTML = '<p class="empty-cart-msg">Tu carrito está vacío.</p>';
+    } else {
+      container.innerHTML = cart.items.map(item => `
+        <div class="cart-item-row">
+          <div class="cart-item-info">
+            <span class="cart-item-title">${item.product.name}</span>
+            <div class="cart-item-qty-row">
+              <button class="qty-btn btn-qty-dec" data-id="${item.product.id}" aria-label="Reducir cantidad de ${item.product.name}">-</button>
+              <span>${item.quantity}</span>
+              <button class="qty-btn btn-qty-inc" data-id="${item.product.id}" aria-label="Aumentar cantidad de ${item.product.name}">+</button>
+              <button class="btn-remove-item" data-id="${item.product.id}" aria-label="Eliminar ${item.product.name} del carrito">Quitar</button>
+            </div>
+          </div>
+          <span class="cart-item-price">${formatCOP(item.product.price * item.quantity)}</span>
+        </div>
+      `).join('');
 
-  if (cart.items.length === 0) {
-    container.innerHTML = '<p class="empty-cart-msg">Tu carrito está vacío.</p>';
-    return;
+      container.querySelectorAll('.btn-qty-inc').forEach(btn => {
+        btn.addEventListener('click', () => cart.updateQuantity(btn.dataset.id, 1));
+      });
+      container.querySelectorAll('.btn-qty-dec').forEach(btn => {
+        btn.addEventListener('click', () => cart.updateQuantity(btn.dataset.id, -1));
+      });
+      container.querySelectorAll('.btn-remove-item').forEach(btn => {
+        btn.addEventListener('click', () => cart.removeItem(btn.dataset.id));
+      });
+    }
   }
 
-  container.innerHTML = cart.items.map(item => `
-    <div class="cart-item-row">
-      <div class="cart-item-info">
-        <span class="cart-item-title">${item.product.name}</span>
-        <div class="cart-item-qty-row">
-          <button class="qty-btn btn-qty-dec" data-id="${item.product.id}" aria-label="Reducir cantidad de ${item.product.name}">-</button>
-          <span>${item.quantity}</span>
-          <button class="qty-btn btn-qty-inc" data-id="${item.product.id}" aria-label="Aumentar cantidad de ${item.product.name}">+</button>
-          <button class="btn-remove-item" data-id="${item.product.id}" aria-label="Eliminar ${item.product.name} del carrito">Quitar</button>
-        </div>
-      </div>
-      <span class="cart-item-price">${formatCOP(item.product.price * item.quantity)}</span>
-    </div>
-  `).join('');
-
-  // Eventos de botones de cantidad y eliminación en drawer
-  container.querySelectorAll('.btn-qty-inc').forEach(btn => {
-    btn.addEventListener('click', () => cart.updateQuantity(btn.dataset.id, 1));
-  });
-  container.querySelectorAll('.btn-qty-dec').forEach(btn => {
-    btn.addEventListener('click', () => cart.updateQuantity(btn.dataset.id, -1));
-  });
-  container.querySelectorAll('.btn-remove-item').forEach(btn => {
-    btn.addEventListener('click', () => cart.removeItem(btn.dataset.id));
-  });
-}
-
-function renderSummary() {
-  const { totalAmount, subtotal, tax } = cart.getTotals();
-  const summaryItems = document.getElementById('summary-items');
-  const summarySubtotal = document.getElementById('summary-subtotal');
-  const summaryTax = document.getElementById('summary-tax');
-  const summaryTotal = document.getElementById('summary-total');
+  // Sincronizar Resumen en Modal de Checkout
+  const modalCartCount = document.getElementById('modal-cart-count');
+  const modalSummaryTotal = document.getElementById('modal-summary-total');
+  const modalSummaryItems = document.getElementById('modal-summary-items');
   const btnAmount = document.getElementById('btn-amount');
 
-  if (summarySubtotal) summarySubtotal.textContent = formatCOP(subtotal);
-  if (summaryTax) summaryTax.textContent = formatCOP(tax);
-  if (summaryTotal) summaryTotal.textContent = formatCOP(totalAmount);
+  if (modalCartCount) modalCartCount.textContent = totalItems;
+  if (modalSummaryTotal) modalSummaryTotal.textContent = formatCOP(totalAmount);
   if (btnAmount) btnAmount.textContent = formatCOP(totalAmount);
 
-  if (!summaryItems) return;
-
-  if (cart.items.length === 0) {
-    summaryItems.innerHTML = '<p class="empty-cart-msg">Tu carrito está vacío. Agrega productos desde el catálogo para continuar.</p>';
-    return;
+  if (modalSummaryItems) {
+    if (cart.items.length === 0) {
+      modalSummaryItems.innerHTML = '<p class="empty-cart-msg">No hay productos seleccionados.</p>';
+    } else {
+      modalSummaryItems.innerHTML = cart.items.map(item => `
+        <div class="modal-summary-item-row">
+          <span class="modal-item-name">${item.quantity}x ${item.product.name}</span>
+          <span class="modal-item-price">${formatCOP(item.product.price * item.quantity)}</span>
+        </div>
+      `).join('');
+    }
   }
-
-  summaryItems.innerHTML = cart.items.map(item => `
-    <div class="cart-item-row">
-      <div class="cart-item-info">
-        <span class="cart-item-title">${item.product.name}</span>
-        <span class="field-hint">Cant: ${item.quantity} x ${formatCOP(item.product.price)}</span>
-      </div>
-      <span class="cart-item-price">${formatCOP(item.product.price * item.quantity)}</span>
-    </div>
-  `).join('');
 }
 
-// 7. Manejo del Drawer y Modales Accesibles
+// 6. Manejo Seguro de Drawer y Modales Accesibles
 function openCartDrawer() {
   const drawer = document.getElementById('cart-drawer');
   const overlay = document.getElementById('cart-drawer-overlay');
@@ -300,8 +335,163 @@ function closeCartDrawer() {
     overlay.style.display = 'none';
     if (toggleBtn) {
       toggleBtn.setAttribute('aria-expanded', 'false');
-      toggleBtn.focus();
     }
+  }
+}
+
+function openCheckoutModal() {
+  closeCartDrawer();
+  const modal = document.getElementById('checkout-modal');
+  const overlay = document.getElementById('checkout-modal-overlay');
+  if (modal && overlay) {
+    modal.hidden = false;
+    overlay.hidden = false;
+    modal.style.display = 'flex';
+    overlay.style.display = 'block';
+    const firstInput = document.getElementById('buyer-name');
+    if (firstInput) firstInput.focus();
+  }
+}
+
+function closeCheckoutModal() {
+  const modal = document.getElementById('checkout-modal');
+  const overlay = document.getElementById('checkout-modal-overlay');
+  if (modal && overlay) {
+    modal.hidden = true;
+    overlay.hidden = true;
+    modal.style.display = 'none';
+    overlay.style.display = 'none';
+  }
+}
+
+// Modal "Ver Detalle" (Recibo de Compra Estructurado)
+function openDetailModal(tx) {
+  const modal = document.getElementById('detail-modal');
+  const overlay = document.getElementById('detail-modal-overlay');
+  const body = document.getElementById('detail-modal-body');
+  if (!modal || !overlay || !body) return;
+
+  const dateStr = new Date(tx.created_at).toLocaleString('es-CO', {
+    dateStyle: 'full',
+    timeStyle: 'medium'
+  });
+
+  const raw = tx.raw_payload || {};
+  const buyer = raw.buyer || {};
+  const payment = raw.payment || {};
+  const items = payment.items || [];
+
+  const subtotal = Math.round(tx.amount / 1.19);
+  const tax = tx.amount - subtotal;
+
+  body.innerHTML = `
+    <div class="receipt-card">
+      <div class="receipt-header-row">
+        <div>
+          <span class="receipt-label">Referencia de Orden</span>
+          <h4 class="receipt-ref">${tx.reference}</h4>
+        </div>
+        <span class="status-badge status-${tx.status}">${tx.status}</span>
+      </div>
+
+      <div class="receipt-section">
+        <h5 class="receipt-section-title">Información Transaccional</h5>
+        <div class="receipt-grid">
+          <div class="receipt-field">
+            <span class="field-title">Fecha y Hora:</span>
+            <span class="field-value">${dateStr}</span>
+          </div>
+          <div class="receipt-field">
+            <span class="field-title">Canal de Pago:</span>
+            <span class="field-value">Placetopay WebCheckout</span>
+          </div>
+          <div class="receipt-field">
+            <span class="field-title">Estado Placetopay:</span>
+            <span class="field-value">${tx.status_message || 'Transacción procesada'}</span>
+          </div>
+          <div class="receipt-field">
+            <span class="field-title">ID de Sesión:</span>
+            <span class="field-value"><code>${tx.session_id || 'N/A'}</code></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="receipt-section">
+        <h5 class="receipt-section-title">Datos del Pagador</h5>
+        <div class="receipt-grid">
+          <div class="receipt-field">
+            <span class="field-title">Nombre Completo:</span>
+            <span class="field-value">${buyer.name || 'Cliente'} ${buyer.surname || ''}</span>
+          </div>
+          <div class="receipt-field">
+            <span class="field-title">Documento:</span>
+            <span class="field-value">${buyer.documentType || 'CC'} ${buyer.document || 'N/A'}</span>
+          </div>
+          <div class="receipt-field">
+            <span class="field-title">Correo Electrónico:</span>
+            <span class="field-value">${buyer.email || 'N/A'}</span>
+          </div>
+          <div class="receipt-field">
+            <span class="field-title">Teléfono Móvil:</span>
+            <span class="field-value">${buyer.mobile || 'N/A'}</span>
+          </div>
+        </div>
+      </div>
+
+      ${items.length > 0 ? `
+        <div class="receipt-section">
+          <h5 class="receipt-section-title">Artículos Comprados (${items.length})</h5>
+          <div class="receipt-items-list">
+            ${items.map(it => `
+              <div class="receipt-item-row">
+                <span>${it.qty || 1}x ${it.name} (${it.sku})</span>
+                <strong>${formatCOP(it.price * (it.qty || 1))}</strong>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      ` : ''}
+
+      <div class="receipt-totals-box">
+        <div class="receipt-total-row">
+          <span>Subtotal:</span>
+          <span>${formatCOP(subtotal)}</span>
+        </div>
+        <div class="receipt-total-row">
+          <span>IVA (19%):</span>
+          <span>${formatCOP(tax)}</span>
+        </div>
+        <div class="receipt-total-row total-highlight">
+          <span>Total Pagado:</span>
+          <strong>${formatCOP(tx.amount)}</strong>
+        </div>
+      </div>
+
+      <!-- Acordeón colapsable para auditoría técnica de la prueba técnica -->
+      <details class="technical-details-box">
+        <summary class="details-summary">🔍 Ver Payload Técnico de Auditoría (JSON)</summary>
+        <pre class="technical-pre" tabindex="0">${JSON.stringify(raw, null, 2)}</pre>
+      </details>
+    </div>
+  `;
+
+  modal.hidden = false;
+  overlay.hidden = false;
+  modal.style.display = 'flex';
+  overlay.style.display = 'block';
+
+  const closeBtn = document.getElementById('close-detail-modal-btn');
+  if (closeBtn) closeBtn.focus();
+}
+
+function closeDetailModal() {
+  const modal = document.getElementById('detail-modal');
+  const overlay = document.getElementById('detail-modal-overlay');
+  if (modal && overlay) {
+    modal.hidden = true;
+    overlay.hidden = true;
+    modal.style.display = 'none';
+    overlay.style.display = 'none';
   }
 }
 
@@ -331,12 +521,12 @@ function closePayloadModal() {
   }
 }
 
-// 8. Carga y Filtros del Tablero de Evidencias Transaccionales
+// 7. Carga y Filtros del Tablero de Evidencias (6 Columnas Limpias)
 async function loadEvidences(filter = 'ALL') {
   const tbody = document.getElementById('evidences-tbody');
   if (!tbody) return;
 
-  tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:1.5rem;">Cargando evidencias desde SQLite...</td></tr>';
+  tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:1.5rem;">Cargando evidencias desde SQLite...</td></tr>';
 
   try {
     const url = filter === 'ALL' ? '/api/transactions/evidences' : `/api/transactions/evidences?status=${filter}`;
@@ -344,7 +534,7 @@ async function loadEvidences(filter = 'ALL') {
     const data = await res.json();
 
     if (!data.success || !data.transactions) {
-      tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; color:#991B1B;">Error al consultar SQLite</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#991B1B;">Error al consultar SQLite</td></tr>';
       return;
     }
 
@@ -368,271 +558,161 @@ async function loadEvidences(filter = 'ALL') {
     }
 
     if (txs.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:1.5rem; color:#64748B;">No hay transacciones registradas con este filtro.</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:1.5rem; color:#64748B;">No hay transacciones registradas con este filtro.</td></tr>';
       return;
     }
 
     tbody.innerHTML = txs.map(tx => {
       const dateStr = new Date(tx.created_at).toLocaleString('es-CO');
-      const payloadSafe = JSON.stringify(tx.raw_payload || {}).replace(/'/g, '&apos;');
+      const txEncoded = encodeURIComponent(JSON.stringify(tx));
       return `
         <tr>
           <td><strong>${tx.reference}</strong></td>
-          <td><span class="sku-tag">${tx.channel}</span></td>
           <td><span class="status-badge status-${tx.status}">${tx.status}</span></td>
-          <td><code>${tx.status_reason || 'N/A'}</code></td>
           <td>${tx.status_message || 'Transacción procesada'}</td>
           <td><strong>${formatCOP(tx.amount)}</strong></td>
-          <td style="font-size:0.8rem; color:#64748B;">${dateStr}</td>
+          <td style="font-size:0.82rem; color:#64748B;">${dateStr}</td>
           <td>
-            <button class="btn btn-secondary btn-sm btn-view-payload" data-payload='${payloadSafe}' aria-label="Ver payload JSON de transacción ${tx.reference}">
-              Ver JSON
+            <button class="btn btn-primary btn-sm btn-view-detail" data-tx="${txEncoded}" aria-label="Ver detalle de transacción ${tx.reference}">
+              <span>👁️ Ver Detalle</span>
             </button>
           </td>
         </tr>
       `;
     }).join('');
 
-    // Asignar eventos de apertura de modal
-    tbody.querySelectorAll('.btn-view-payload').forEach(btn => {
+    // Asignar eventos a los botones "Ver Detalle"
+    tbody.querySelectorAll('.btn-view-detail').forEach(btn => {
       btn.addEventListener('click', () => {
         try {
-          const raw = JSON.parse(btn.getAttribute('data-payload'));
-          openPayloadModal(raw);
+          const rawTx = JSON.parse(decodeURIComponent(btn.getAttribute('data-tx')));
+          openDetailModal(rawTx);
         } catch (e) {
-          openPayloadModal(btn.getAttribute('data-payload'));
+          console.error('Error al decodificar transacción:', e);
         }
       });
     });
 
   } catch (err) {
     console.error('[EVIDENCES LOAD ERROR]', err);
-    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; color:#991B1B;">Error de conexión con el servidor</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#991B1B;">Error de conexión con el servidor</td></tr>';
   }
 }
 
-// 9. Manejador del Formulario de Pago
+// 8. Manejador del Formulario de Pago (100% WebCheckout Transparente)
 function initCheckoutForm() {
   const form = document.getElementById('checkout-form');
-  const channelInputs = document.querySelectorAll('input[name="paymentChannel"]');
-  const gatewayFields = document.getElementById('gateway-card-fields');
-  const cardNumberInput = document.getElementById('card-number');
-  const cardExpInput = document.getElementById('card-exp');
-  const cardBrandBadge = document.getElementById('card-brand-badge');
   const feedback = document.getElementById('checkout-feedback');
   const submitBtn = document.getElementById('submit-pay-btn');
   const spinner = document.getElementById('btn-spinner');
   const btnText = document.getElementById('btn-text');
 
-  // Alternar entre WebCheckout y Gateway Directo
-  channelInputs.forEach(radio => {
-    radio.addEventListener('change', () => {
-      document.querySelectorAll('.channel-card').forEach(c => c.classList.remove('active'));
-      const parentLabel = radio.closest('.channel-card');
-      if (parentLabel) parentLabel.classList.add('active');
+  if (!form) return;
 
-      if (radio.value === 'GATEWAY_DIRECT') {
-        gatewayFields.hidden = false;
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    feedback.innerHTML = '';
+
+    const { totalAmount } = cart.getTotals();
+    if (totalAmount <= 0) {
+      feedback.innerHTML = '<div class="alert-box alert-danger">Debes agregar al menos un smartphone al carrito para continuar.</div>';
+      return;
+    }
+
+    // Validar datos del comprador
+    const buyerName = document.getElementById('buyer-name').value.trim();
+    const buyerSurname = document.getElementById('buyer-surname').value.trim();
+    const buyerEmail = document.getElementById('buyer-email').value.trim();
+    const buyerMobile = document.getElementById('buyer-mobile').value.trim();
+    const buyerDocType = document.getElementById('buyer-doc-type').value;
+    const buyerDoc = document.getElementById('buyer-doc').value.trim();
+    const buyerStreet = document.getElementById('buyer-street').value.trim();
+    const buyerCity = document.getElementById('buyer-city').value.trim();
+
+    if (!buyerName || !buyerSurname || !buyerEmail || !buyerMobile || !buyerDoc) {
+      feedback.innerHTML = '<div class="alert-box alert-danger">Por favor completa todos los campos obligatorios del comprador marcados con asterisco (*).</div>';
+      return;
+    }
+
+    // Referencia única de transacción
+    const reference = 'SMART-' + Date.now();
+
+    // Payload de Contrato: SIEMPRE WebCheckout
+    const contractPayload = {
+      buyer: {
+        name: buyerName,
+        surname: buyerSurname,
+        email: buyerEmail,
+        documentType: buyerDocType,
+        document: buyerDoc,
+        mobile: buyerMobile,
+        address: {
+          street: buyerStreet || 'Carrera 7 # 72-01',
+          city: buyerCity || 'Bogotá D.C.'
+        }
+      },
+      payment: {
+        reference: reference,
+        description: `Compra de Smartphones en Evertec PayShop (${cart.items.length} equipos)`,
+        amount: totalAmount,
+        currency: 'COP',
+        items: cart.items.map(i => ({
+          sku: i.product.sku,
+          name: i.product.name,
+          qty: i.quantity,
+          price: i.product.price
+        }))
+      },
+      channel: 'WEBCHECKOUT'
+    };
+
+    // Estado de carga en el botón
+    submitBtn.disabled = true;
+    spinner.hidden = false;
+    btnText.textContent = 'Generando sesión Placetopay...';
+
+    try {
+      const res = await fetch('/api/checkout/session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(contractPayload)
+      });
+      const result = await res.json();
+
+      if (result.success && result.processUrl) {
+        feedback.innerHTML = `
+          <div class="alert-box alert-success" style="background:#ECFDF5; border-color:#10B981; color:#065F46;">
+            <strong>✅ Sesión WebCheckout Creada con Éxito (RequestId: ${result.requestId})</strong>
+            <p style="margin: 0.5rem 0;">Tu orden ha sido registrada. Haz clic a continuación para ser redirigido a la pasarela bancaria oficial de Placetopay Evertec:</p>
+            <div style="margin-top:0.85rem; display:flex; gap:0.75rem; flex-wrap:wrap;">
+              <a href="${result.processUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm">
+                Ir a Pagar en Placetopay WebCheckout &rarr;
+              </a>
+              <button type="button" class="btn btn-secondary btn-sm" onclick="checkWebcheckoutStatus(${result.requestId})">
+                Consultar Estado
+              </button>
+            </div>
+          </div>
+        `;
       } else {
-        gatewayFields.hidden = true;
+        feedback.innerHTML = `<div class="alert-box alert-danger"><strong>Error WebCheckout:</strong> ${result.error || 'No se pudo generar la sesión de pago.'}</div>`;
       }
-    });
+
+      // Recargar visor de evidencias inmediatamente
+      await loadEvidences('ALL');
+
+    } catch (err) {
+      console.error('[CHECKOUT SUBMIT ERROR]', err);
+      feedback.innerHTML = `<div class="alert-box alert-danger">Error al conectar con la pasarela: ${err.message}</div>`;
+    } finally {
+      submitBtn.disabled = false;
+      spinner.hidden = true;
+      btnText.innerHTML = `Pagar <strong id="btn-amount">${formatCOP(totalAmount)}</strong>`;
+    }
   });
-
-  // Formateador y Detección de Tarjeta
-  if (cardNumberInput) {
-    cardNumberInput.addEventListener('input', (e) => {
-      let val = e.target.value.replace(/\D/g, '').substring(0, 16);
-      const brand = detectCardBrand(val);
-      if (cardBrandBadge) cardBrandBadge.textContent = brand;
-
-      // Formatear bloques de 4 dígitos
-      const formatted = val.match(/.{1,4}/g)?.join(' ') || val;
-      e.target.value = formatted;
-    });
-  }
-
-  // Formateador de Fecha de Expiración (MM/YY)
-  if (cardExpInput) {
-    cardExpInput.addEventListener('input', (e) => {
-      let val = e.target.value.replace(/\D/g, '').substring(0, 4);
-      if (val.length >= 3) {
-        val = val.substring(0, 2) + '/' + val.substring(2);
-      }
-      e.target.value = val;
-    });
-  }
-
-  // Procesamiento del Formulario
-  if (form) {
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      feedback.innerHTML = '';
-
-      const { totalAmount } = cart.getTotals();
-      if (totalAmount <= 0) {
-        feedback.innerHTML = '<div class="alert-box alert-danger">Debes agregar al menos un producto al carrito para realizar el pago.</div>';
-        return;
-      }
-
-      // Validar datos de comprador
-      const buyerName = document.getElementById('buyer-name').value.trim();
-      const buyerSurname = document.getElementById('buyer-surname').value.trim();
-      const buyerEmail = document.getElementById('buyer-email').value.trim();
-      const buyerMobile = document.getElementById('buyer-mobile').value.trim();
-      const buyerDocType = document.getElementById('buyer-doc-type').value;
-      const buyerDoc = document.getElementById('buyer-doc').value.trim();
-      const buyerStreet = document.getElementById('buyer-street').value.trim();
-      const buyerCity = document.getElementById('buyer-city').value.trim();
-      const channel = document.querySelector('input[name="paymentChannel"]:checked').value;
-
-      if (!buyerName || !buyerSurname || !buyerEmail || !buyerMobile || !buyerDoc) {
-        feedback.innerHTML = '<div class="alert-box alert-danger">Por favor completa todos los campos obligatorios del comprador marcados con asterisco (*).</div>';
-        return;
-      }
-
-      // Referencia única de transacción
-      const reference = 'ORD-' + Date.now();
-
-      // Construcción del Contrato Base
-      const contractPayload = {
-        buyer: {
-          name: buyerName,
-          surname: buyerSurname,
-          email: buyerEmail,
-          documentType: buyerDocType,
-          document: buyerDoc,
-          mobile: buyerMobile,
-          address: {
-            street: buyerStreet || 'Calle Principal # 1-1',
-            city: buyerCity || 'Bogotá'
-          }
-        },
-        payment: {
-          reference: reference,
-          description: `Compra en Evertec PayShop (${cart.items.length} productos)`,
-          amount: totalAmount,
-          currency: 'COP',
-          items: cart.items.map(i => ({
-            sku: i.product.sku,
-            name: i.product.name,
-            qty: i.quantity,
-            price: i.product.price
-          }))
-        },
-        channel: channel
-      };
-
-      // Si es Gateway Directo, anexar datos de tarjeta
-      if (channel === 'GATEWAY_DIRECT') {
-        const rawCardNum = (cardNumberInput ? cardNumberInput.value : '').replace(/\s+/g, '');
-        const rawExp = cardExpInput ? cardExpInput.value : '';
-        const rawCvv = document.getElementById('card-cvv').value.trim();
-        const installments = parseInt(document.getElementById('card-installments').value, 10) || 1;
-
-        if (!rawCardNum || rawCardNum.length < 13) {
-          feedback.innerHTML = '<div class="alert-box alert-danger">El número de tarjeta ingresado no es válido.</div>';
-          return;
-        }
-
-        const expParts = rawExp.split('/');
-        contractPayload.card = {
-          number: rawCardNum,
-          expirationMonth: expParts[0] || '12',
-          expirationYear: expParts[1] ? '20' + expParts[1] : '2028',
-          cvv: rawCvv || '123',
-          installments: installments,
-          brand: detectCardBrand(rawCardNum)
-        };
-      }
-
-      // Estado de carga en botón
-      submitBtn.disabled = true;
-      spinner.hidden = false;
-      btnText.textContent = 'Procesando con Placetopay...';
-
-      try {
-        if (channel === 'WEBCHECKOUT') {
-          // Flujo WebCheckout Placetopay
-          const res = await fetch('/api/checkout/session', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(contractPayload)
-          });
-          const result = await res.json();
-
-          if (result.success && result.processUrl) {
-            feedback.innerHTML = `
-              <div class="alert-box alert-warning">
-                <strong>Sesión WebCheckout Creada Exitosamente (RequestId: ${result.requestId})</strong>
-                <p>Estado de sesión: <strong>PENDIENTE</strong>. Placetopay ha generado la URL de redirección transaccional.</p>
-                <div style="margin-top:0.85rem; display:flex; gap:0.75rem; flex-wrap:wrap;">
-                  <a href="${result.processUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm">
-                    Ir a la Pasarela Oficial de Placetopay &rarr;
-                  </a>
-                  <button type="button" class="btn btn-secondary btn-sm" onclick="checkWebcheckoutStatus(${result.requestId})">
-                    Consultar Estado de Sesión
-                  </button>
-                </div>
-              </div>
-            `;
-          } else {
-            feedback.innerHTML = `<div class="alert-box alert-danger"><strong>Error WebCheckout:</strong> ${result.error || 'No se pudo generar la sesión de pago.'}</div>`;
-          }
-
-        } else {
-          // Flujo API Gateway Directo
-          const res = await fetch('/api/checkout/gateway', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(contractPayload)
-          });
-          const result = await res.json();
-
-          if (result.status === 'APPROVED') {
-            feedback.innerHTML = `
-              <div class="alert-box alert-success">
-                <strong>🎉 ¡Transacción Aprobada Exitosamente!</strong>
-                <p>Referencia: <strong>${result.reference}</strong> | Código de Autorización: <strong>${result.authorizationCode}</strong> | Recibo: <strong>${result.receipt}</strong></p>
-                <p>Persistida en la base de datos relacional SQLite.</p>
-              </div>
-            `;
-          } else if (result.status === 'PENDING') {
-            feedback.innerHTML = `
-              <div class="alert-box alert-warning">
-                <strong>⏳ Transacción en Proceso / Pendiente</strong>
-                <p>Código: <code>${result.statusReason}</code> | Mensaje: <em>${result.statusMessage}</em></p>
-                <p>La red financiera está verificando los fondos asíncronamente.</p>
-              </div>
-            `;
-          } else {
-            feedback.innerHTML = `
-              <div class="alert-box alert-danger">
-                <strong>❌ Transacción Declinada / Rechazada</strong>
-                <p>Código de Rechazo: <code>${result.statusReason}</code></p>
-                <p>Causal: <strong>${result.statusMessage}</strong></p>
-                <p class="field-hint">Tip: Esta declinación ha sido debidamente catalogada y registrada en SQLite para auditoría.</p>
-              </div>
-            `;
-          }
-        }
-
-        // Recargar visor de evidencias inmediatamente
-        await loadEvidences('ALL');
-
-      } catch (err) {
-        console.error('[CHECKOUT SUBMIT ERROR]', err);
-        feedback.innerHTML = `<div class="alert-box alert-danger">Error al conectar con la pasarela: ${err.message}</div>`;
-      } finally {
-        submitBtn.disabled = false;
-        spinner.hidden = true;
-        btnText.innerHTML = `Pagar <strong id="btn-amount">${formatCOP(totalAmount)}</strong>`;
-      }
-    });
-  }
 }
 
-// 10. Función Global para Consultar Estado de WebCheckout
+// 9. Función Global para Consultar Estado de WebCheckout
 window.checkWebcheckoutStatus = async function(requestId) {
   try {
     const res = await fetch(`/api/checkout/status/${requestId}`);
@@ -644,38 +724,62 @@ window.checkWebcheckoutStatus = async function(requestId) {
   }
 };
 
-// 11. Inicialización en el Carga del DOM
+// 10. Inicialización en la Carga del DOM
 document.addEventListener('DOMContentLoaded', () => {
-  // Asegurar que drawer y modal inicien cerrados
+  // Asegurar que modales y drawer inicien cerrados
   closeCartDrawer();
+  closeCheckoutModal();
+  closeDetailModal();
   closePayloadModal();
 
   renderCatalog();
   renderCart();
-  renderSummary();
   initCheckoutForm();
   loadEvidences('ALL');
 
-  // Eventos de Drawer del Carrito
+  // Evento Botón del Carrito en Header (resiliente)
   const cartToggleBtn = document.getElementById('cart-toggle-btn');
-  const closeCartBtn = document.getElementById('close-cart-btn');
-  const cartOverlay = document.getElementById('cart-drawer-overlay');
-  const proceedBtn = document.getElementById('proceed-to-checkout-btn');
-
-  if (cartToggleBtn) cartToggleBtn.addEventListener('click', openCartDrawer);
-  if (closeCartBtn) closeCartBtn.addEventListener('click', closeCartDrawer);
-  if (cartOverlay) cartOverlay.addEventListener('click', closeCartDrawer);
-  if (proceedBtn) {
-    proceedBtn.addEventListener('click', () => {
-      closeCartDrawer();
-      const checkoutSection = document.getElementById('checkout-section');
-      if (checkoutSection) {
-        checkoutSection.scrollIntoView({ behavior: 'smooth' });
-        const firstInput = document.getElementById('buyer-name');
-        if (firstInput) firstInput.focus();
-      }
+  if (cartToggleBtn) {
+    cartToggleBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openCartDrawer();
     });
   }
+
+  // Eventos de Cierre del Carrito
+  const closeCartBtn = document.getElementById('close-cart-btn');
+  const cartOverlay = document.getElementById('cart-drawer-overlay');
+  if (closeCartBtn) closeCartBtn.addEventListener('click', closeCartDrawer);
+  if (cartOverlay) cartOverlay.addEventListener('click', closeCartDrawer);
+
+  // Botón "Ir a Pagar" del Drawer: Abre el Modal de Checkout
+  const proceedBtn = document.getElementById('proceed-to-checkout-btn');
+  if (proceedBtn) {
+    proceedBtn.addEventListener('click', () => {
+      openCheckoutModal();
+    });
+  }
+
+  // Enlace Checkout en el Nav
+  const navCheckoutBtn = document.getElementById('nav-checkout-btn');
+  if (navCheckoutBtn) {
+    navCheckoutBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      openCheckoutModal();
+    });
+  }
+
+  // Eventos de Cierre del Modal de Checkout
+  const closeCheckoutBtn = document.getElementById('close-checkout-modal-btn');
+  const checkoutOverlay = document.getElementById('checkout-modal-overlay');
+  if (closeCheckoutBtn) closeCheckoutBtn.addEventListener('click', closeCheckoutModal);
+  if (checkoutOverlay) checkoutOverlay.addEventListener('click', closeCheckoutModal);
+
+  // Eventos de Cierre del Modal "Ver Detalle"
+  const closeDetailBtn = document.getElementById('close-detail-modal-btn');
+  const detailOverlay = document.getElementById('detail-modal-overlay');
+  if (closeDetailBtn) closeDetailBtn.addEventListener('click', closeDetailModal);
+  if (detailOverlay) detailOverlay.addEventListener('click', closeDetailModal);
 
   // Eventos de Modal de Payload
   const closeModalBtn = document.getElementById('close-modal-btn');
@@ -683,10 +787,12 @@ document.addEventListener('DOMContentLoaded', () => {
   if (closeModalBtn) closeModalBtn.addEventListener('click', closePayloadModal);
   if (modalOverlay) modalOverlay.addEventListener('click', closePayloadModal);
 
-  // Cerrar Drawer y Modal con tecla ESC
+  // Tecla Escape para cerrar modales o drawer activos
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
       closeCartDrawer();
+      closeCheckoutModal();
+      closeDetailModal();
       closePayloadModal();
     }
   });
