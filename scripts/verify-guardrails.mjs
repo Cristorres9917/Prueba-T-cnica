@@ -103,15 +103,32 @@ try {
   recordCheck('Taxonomía Documental SDD', false, e.message);
 }
 
-// 9. Verificar Puerta de Entrega Vacía
+// 9. Verificar Integridad de la Puerta de Entrega (Correspondencia SDD)
 try {
   const entregasDir = path.join(rootDir, 'docs', 'sdd', '04-entregas');
-  let isClean = false;
+  let isValid = true;
+  let detail = 'Todas las entregas corresponden a specs y pruebas verificadas';
   if (fs.existsSync(entregasDir)) {
-    const files = fs.readdirSync(entregasDir).filter(f => f.endsWith('.md'));
-    isClean = files.length === 0;
+    const deliveryFiles = fs.readdirSync(entregasDir).filter(f => f.endsWith('.md'));
+    for (const file of deliveryFiles) {
+      const match = file.match(/^([0-9]{3})-entrega/);
+      if (match) {
+        const specNum = match[1];
+        const specExists = fs.readdirSync(path.join(rootDir, 'docs', 'sdd', '01-specs')).some(f => f.startsWith(`${specNum}-spec`));
+        const testExists = fs.readdirSync(path.join(rootDir, 'docs', 'sdd', '03-agentest')).some(f => f.startsWith(`${specNum}-agentest`));
+        if (!specExists || !testExists) {
+          isValid = false;
+          detail = `Entrega ${file} no cuenta con Spec o Agentest correspondiente`;
+          break;
+        }
+      } else {
+        isValid = false;
+        detail = `Archivo ${file} en 04-entregas no sigue el estándar XXX-entrega-*.md`;
+        break;
+      }
+    }
   }
-  recordCheck('Puerta de Entrega Segura', isClean, isClean ? 'Carpeta 04-entregas sin documentos prematuros' : 'Se encontraron archivos de entrega no autorizados');
+  recordCheck('Puerta de Entrega Segura', isValid, detail);
 } catch (e) {
   recordCheck('Puerta de Entrega Segura', false, e.message);
 }

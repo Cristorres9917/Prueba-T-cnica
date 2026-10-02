@@ -75,6 +75,13 @@ classDiagram
         +Auditar Deudas Técnicas
         +Consume: sdd-validator
     }
+    class GitWorkflowGuardian {
+        +Auditar commits atómicos
+        +Validar ramas por spec
+        +Bloquear git add .
+        +Preparar merge humano
+        +Consume: git-workflow, sdd-validator
+    }
 ```
 
 ### 3.1. Agente: `SDD-Architect`
@@ -116,11 +123,22 @@ classDiagram
 - **Skills Consumidas:**
   - `sdd-validator`: Validador formal de los entregables y completitud de pruebas.
 
+### 3.5. Agente: `Git-Workflow-Guardian`
+- **Rol:** Custodio de control de versiones, trazabilidad atómica y compuerta de aprobación de merges.
+- **Responsabilidades:**
+  - Impedir incondicionalmente la ejecución de `git add .` o staging indiscriminado.
+  - Asegurar la segregación estricta de ramas por spec (`feat/spec-XXX-<slug>`).
+  - Auditar la atomicidad de los commits clasificándolos por responsabilidad temática (`feat`, `docs`, `chore`, `test`, `fix`).
+  - Preparar el reporte de entrega y facilitar la compuerta de merge para aprobación humana.
+- **Skills Consumidas:**
+  - `git-workflow`: Procedimiento canónico de control de versiones en SDD.
+  - `sdd-validator`: Verificación de consistencia previa a la emisión de merge requests.
+
 ---
 
 ## 4. Directorio de Customizaciones del Arnés
 
 Las configuraciones operativas del arnés se encuentran organizadas en:
-- `.agents/rules/`: Reglas de cumplimiento forzoso (`guardrails.md`, `sdd-lifecycle.md`).
-- `.agents/skills/`: Procedimientos operacionales ejecutables por los agentes (`sdd-validator/`, `placetopay-auth/`).
+- `.agents/rules/`: Reglas de cumplimiento forzoso (`guardrails.md`, `sdd-lifecycle.md`, `branching-strategy.md`).
+- `.agents/skills/`: Procedimientos operacionales ejecutables por los agentes (`sdd-validator/`, `placetopay-auth/`, `git-workflow/`).
 - `scripts/`: Herramientas de automatización para validación y testing.

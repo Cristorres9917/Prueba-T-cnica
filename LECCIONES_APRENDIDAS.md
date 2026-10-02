@@ -28,3 +28,13 @@ Este documento recopila las lecciones aprendidas, patrones arquitectónicos cons
 - **Lección 5: Robustez en el Cálculo de Autenticación Criptográfica.**
   - *Contexto:* Los errores más comunes reportados en soporte ("Error 102" y "Autenticación mal formada") radican en la generación del digest `tranKey` y formato de `seed`/`nonce`.
   - *Aprendizaje:* Centralizar la lógica criptográfica en una skill reusable (`placetopay-auth`) garantiza que tanto la implementación del backend como los agentes de soporte utilicen la misma definición matemática exacta de `Base64(SHA256(rawNonce + seed + secretKey))`.
+
+---
+
+## 4. Control de Versiones Git y Ramas por Spec (Anthropic SDD)
+- **Lección 6: Commits Atómicos por Responsabilidad y Prohibición de `git add .`.**
+  - *Contexto:* El uso indiscriminado de `git add .` agrupa archivos de distintas responsabilidades en un solo commit, degradando la trazabilidad histórica y aumentando riesgos de filtración.
+  - *Aprendizaje:* La segregación estricta de cambios por responsabilidad temática (`chore`, `feat`, `docs`, `test`, `fix`) con staging explícito archivo por archivo asegura claridad absoluta en las revisiones.
+- **Lección 7: Compuerta de Aprobación Humana (Merge Gate).**
+  - *Contexto:* Los agentes autónomos no deben realizar fusiones unilaterales a `main` sin verificación de los tomadores de decisión humanos.
+  - *Aprendizaje:* Aislar cada spec en ramas `feat/spec-XXX-<slug>` y exigir la validación de los Agentests antes de que el usuario humano autorice y ejecute el `git merge` garantiza la máxima seguridad operativa en SDD.
