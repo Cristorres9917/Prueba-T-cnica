@@ -54,6 +54,11 @@
   padding: 0;
 }
 
+/* Regla Universal de Ocultación Accesible */
+[hidden] {
+  display: none !important;
+}
+
 html {
   font-size: 16px;
   scroll-behavior: smooth;
@@ -988,6 +993,11 @@ textarea:focus-visible {
   z-index: 200;
 }
 
+.drawer-overlay[hidden],
+.modal-overlay[hidden] {
+  display: none !important;
+}
+
 .cart-drawer {
   position: fixed;
   top: 0;
@@ -1002,6 +1012,10 @@ textarea:focus-visible {
   box-shadow: var(--shadow-lg);
   padding: 1.5rem;
   transition: transform 0.3s ease;
+}
+
+.cart-drawer[hidden] {
+  display: none !important;
 }
 
 .drawer-header,
@@ -1063,6 +1077,10 @@ textarea:focus-visible {
   display: flex;
   flex-direction: column;
   box-shadow: var(--shadow-lg);
+}
+
+.modal-dialog[hidden] {
+  display: none !important;
 }
 
 .modal-body {

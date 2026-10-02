@@ -281,6 +281,8 @@ function openCartDrawer() {
   if (drawer && overlay) {
     drawer.hidden = false;
     overlay.hidden = false;
+    drawer.style.display = 'flex';
+    overlay.style.display = 'block';
     if (toggleBtn) toggleBtn.setAttribute('aria-expanded', 'true');
     const closeBtn = document.getElementById('close-cart-btn');
     if (closeBtn) closeBtn.focus();
@@ -294,6 +296,8 @@ function closeCartDrawer() {
   if (drawer && overlay) {
     drawer.hidden = true;
     overlay.hidden = true;
+    drawer.style.display = 'none';
+    overlay.style.display = 'none';
     if (toggleBtn) {
       toggleBtn.setAttribute('aria-expanded', 'false');
       toggleBtn.focus();
@@ -309,6 +313,8 @@ function openPayloadModal(jsonObj) {
     content.textContent = typeof jsonObj === 'string' ? jsonObj : JSON.stringify(jsonObj, null, 2);
     modal.hidden = false;
     overlay.hidden = false;
+    modal.style.display = 'flex';
+    overlay.style.display = 'block';
     const closeBtn = document.getElementById('close-modal-btn');
     if (closeBtn) closeBtn.focus();
   }
@@ -320,6 +326,8 @@ function closePayloadModal() {
   if (modal && overlay) {
     modal.hidden = true;
     overlay.hidden = true;
+    modal.style.display = 'none';
+    overlay.style.display = 'none';
   }
 }
 
@@ -638,6 +646,10 @@ window.checkWebcheckoutStatus = async function(requestId) {
 
 // 11. Inicialización en el Carga del DOM
 document.addEventListener('DOMContentLoaded', () => {
+  // Asegurar que drawer y modal inicien cerrados
+  closeCartDrawer();
+  closePayloadModal();
+
   renderCatalog();
   renderCart();
   renderSummary();
