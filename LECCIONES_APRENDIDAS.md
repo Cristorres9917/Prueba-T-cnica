@@ -73,6 +73,19 @@ Este documento recopila las lecciones aprendidas, patrones arquitectónicos cons
   - *Aprendizaje:* Al mover el checkout a un modal interactivo (`#checkout-modal`) y predeterminar WebCheckout por debajo, el usuario solo diligencia los datos indispensables del comprador y es transferido a la pasarela bancaria oficial de Placetopay, cumpliendo los más altos estándares de UX e-commerce y seguridad PCI-DSS.
 - **Lección 15: Tipado Estricto de Parámetros en Claves Foráneas de SQLite.**
   - *Contexto:* La normalización de contratos puede transformar primitivos numéricos en objetos (ej. `payment.amount` $\rightarrow$ `{ total, currency }`). Si un valor de tipo objeto se intenta vincular a un parámetro numérico en `node:sqlite` (`DatabaseSync`), la base de datos aborta con `Provided value cannot be bound to SQLite parameter`. Asimismo, asignar un `requestId` externo al campo `session_id` viola la restricción `FOREIGN KEY (session_id) REFERENCES payment_sessions(id)`.
-  - *Aprendizaje:* La extracción explícita `typeof amount === 'object' ? amount.total : amount` y la resolución de la clave primaria autoincremental `sessionRecord.id` aseguran integridad referencial absoluta en SQLite.
+## 8. Sincronización Transaccional WebCheckout, Deserialización Defensiva y Robustez UI Grid (Spec-06)
+- **Lección 16: Deserialización Defensiva de Cargas Útiles (`raw_payload`) en SQLite.**
+  - *Contexto:* SQLite almacena campos JSON como cadenas `TEXT`. Al recuperar registros mediante `getTransactions()`, si la capa de acceso a datos retorna la cadena cruda en lugar de un objeto estructurado, el frontend recibe strings JSON anidados que, al acceder propiedades como `tx.raw_payload.buyer`, resultan en `undefined`.
+  - *Aprendizaje:* Realizar deserialización automática en la capa de datos (`JSON.parse(row.raw_payload)`) combinada con parseo defensivo en el frontend (`typeof raw === 'string' ? JSON.parse(raw) : raw`) garantiza acceso fiable a los datos del comprador, teléfono y dirección física de entrega en el modal de detalle.
+- **Lección 17: Normalización de Fechas UTC de SQLite para Localización en Front (`America/Bogota`).**
+  - *Contexto:* El default `CURRENT_TIMESTAMP` en SQLite almacena la fecha en UTC con formato `YYYY-MM-DD HH:MM:SS` sin indicador de zona horaria `Z`. Los navegadores y funciones nativas de fecha pueden interpretar esta cadena como hora local sin compensación horaria, mostrando desfases de 5 horas respecto al huso colombiano.
+  - *Aprendizaje:* Normalizar la cadena reemplazando el espacio por `T` y sufijando `Z` (`ts.replace(' ', 'T') + 'Z'`) junto con el formateador `Intl.DateTimeFormat` configurado explícitamente en `timeZone: 'America/Bogota'` asegura que tanto la tabla de evidencias como el recibo de compra muestren la fecha y hora colombiana exacta (UTC-5).
+- **Lección 18: Diseño Defensivo de Tarjetas de Producto y Botones Flexbox.**
+  - *Contexto:* En grids responsivos con descripciones de longitud variable, las tarjetas podían presentar alturas dispares y, en anchos reducidos, el botón "+ Añadir" desbordaba horizontalmente fuera del contenedor de la tarjeta al sumar padding excesivo y precio en la misma línea.
+  - *Aprendizaje:* Establecer `minmax(285px, 1fr)` en el grid, alturas fijas con `line-clamp` en título y descripción, `box-sizing: border-box`, `overflow: hidden` en la tarjeta y anchos controlados con `flex-shrink: 0` en el botón de compra garantizan una alineación geométrica milimétrica en todo el catálogo de smartphones.
+- **Lección 19: Ciclo de Vida del Carrito en Retorno de Pasarela.**
+  - *Contexto:* Al completar el pago en WebCheckout y ser redirigido de vuelta al comercio, los productos previamente seleccionados permanecían en el carrito si no se implementaba un mecanismo explícito de vaciado.
+  - *Aprendizaje:* Vaciar el carrito (`cart.clearCart()`) inmediatamente antes de transferir al cliente hacia la pasarela bancaria y revalidar la limpieza ante la presencia del query parameter `?status=return` garantiza un nuevo inicio de compra limpio y transparente para el usuario.
+
 
 

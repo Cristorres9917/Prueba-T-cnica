@@ -13,8 +13,9 @@ Este documento registra de forma transparente y continua las deudas técnicas id
 | **DT-003** | Frontend | La tienda y el carrito no disponen aún de interfaz gráfica en este spec de arnés. | Bajo | Medio | **Cerrada** | Resuelto en **Spec-04**: Evertec PayShop implementado con A11y WCAG 2.1 AA, SEO, carrito reactivo y visor de evidencias. |
 | **DT-004** | Seguridad | Las credenciales de prueba (`login` y `secretKey`) provistas en el docx se mantendrán en variables de entorno o archivo de configuración local `.env`. | Medio | Bajo | **Mitigada** | Se añadieron `.env*` a `.gitignore` y el servicio transaccional admite variables de entorno `P2P_LOGIN`/`P2P_SECRET_KEY`. |
 | **DT-005** | Control de Versiones | Los guardrails de Git se auditan mediante scripts ejecutables (`pnpm run verify:git`), sin hook nativo en `.git/hooks`. | Bajo | Bajo | **Abierta** | Evaluar la adición de un pre-commit hook nativo que ejecute `verify:git` automáticamente. |
-| **DT-006** | Documentación / Soporte | Resolución de las 7 preguntas conceptuales y los 4 casos de soporte técnico (Sunshine y Claro) con diagramas de flujo. | Medio | Medio | **Planificada** | Se formalizará en el **Spec-06 (Soporte Técnico, Casos de Negocio y Diagramas)**. |
+| **DT-006** | Documentación / Soporte | Resolución de las 7 preguntas conceptuales y los 4 casos de soporte técnico (Sunshine y Claro) con diagramas de flujo. | Medio | Medio | **Planificada** | Se formalizará en el **Spec-07 (Soporte Técnico, Casos de Negocio y Diagramas)**. |
 | **DT-007** | Arquitectura / Webhooks | Notificación asíncrona de WebCheckout vía Webhook endpoint en tiempo real para transacciones de producción. | Bajo | Medio | **Abierta** | En el mockup se simula y consulta vía polling/status; para producción se recomienda agregar endpoint `/api/webhook/placetopay`. |
+| **DT-008** | Sincronización WebCheckout | Estado de transacciones WebCheckout en SQLite permanecía en PENDING tras retorno del comprador. | Medio | Bajo | **Cerrada** | Resuelto en **Spec-06**: Sincronización automática de estado, recibo, código de autorización y datos de comprador en modal de detalle. |
 
 ---
 
