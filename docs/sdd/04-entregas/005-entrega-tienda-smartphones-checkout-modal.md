@@ -59,3 +59,9 @@ Conforme a las directivas del arnés Antigravity y la metodología SDD de Anthro
 - **Rama Origen:** `feat/spec-005-tienda-smartphones-checkout-modal`
 - **Rama Destino:** `main`
 - **Acción Requerida:** Se presenta esta acta al usuario y **se requiere su autorización explícita** antes de realizar la fusión hacia `main`.
+
+Una vez recibida la autorización humana, el procedimiento canónico de merge es:
+```bash
+git checkout main
+git merge --no-ff feat/spec-005-tienda-smartphones-checkout-modal
+```
