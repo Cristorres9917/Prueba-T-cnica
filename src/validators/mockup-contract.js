@@ -49,6 +49,11 @@ export function validateMockupPaymentPayload(payload) {
     if (!payment.description || typeof payment.description !== 'string' || payment.description.trim().length === 0) {
       errors.push('payment.description es requerido para la orden');
     }
+    // Normalizar amount si viene como número
+    if (typeof payment.amount === 'number') {
+      payment.amount = { total: payment.amount, currency: payment.currency || 'COP' };
+    }
+
     if (!payment.amount || typeof payment.amount !== 'object') {
       errors.push('payment.amount es requerido');
     } else {
@@ -69,17 +74,19 @@ export function validateMockupPaymentPayload(payload) {
 
   // 4. Validar datos de tarjeta si el canal es GATEWAY_DIRECT
   if (channel === 'GATEWAY_DIRECT') {
-    const card = payload.instrument?.card;
+    const card = payload.instrument?.card || payload.card;
     if (!card || typeof card !== 'object') {
-      errors.push('instrument.card es requerido para el canal GATEWAY_DIRECT');
+      errors.push('card o instrument.card es requerido para el canal GATEWAY_DIRECT');
     } else {
       if (!card.number || !/^[0-9]{13,19}$/.test(card.number.replace(/\s/g, ''))) {
         errors.push('instrument.card.number debe ser un número de tarjeta válido (13 a 19 dígitos)');
       }
-      if (!card.expMonth || !/^(0[1-9]|1[0-2])$/.test(card.expMonth)) {
+      const expMonth = card.expMonth || card.expirationMonth;
+      if (!expMonth || !/^(0[1-9]|1[0-2]|[1-9])$/.test(String(expMonth))) {
         errors.push('instrument.card.expMonth debe ser un mes válido en formato MM (01-12)');
       }
-      if (!card.expYear || !/^[0-9]{2,4}$/.test(card.expYear)) {
+      const expYear = card.expYear || card.expirationYear;
+      if (!expYear || !/^[0-9]{2,4}$/.test(String(expYear))) {
         errors.push('instrument.card.expYear debe ser un año válido en formato YY o YYYY');
       }
       if (!card.cvv || !/^[0-9]{3,4}$/.test(card.cvv)) {
@@ -93,6 +100,7 @@ export function validateMockupPaymentPayload(payload) {
 
   return {
     valid: errors.length === 0,
+    isValid: errors.length === 0,
     errors,
     sanitized: errors.length === 0 ? {
       buyer: {
@@ -123,3 +131,6 @@ export function validateMockupPaymentPayload(payload) {
     } : null
   };
 }
+
+export const validateMockupPayload = validateMockupPaymentPayload;
+
