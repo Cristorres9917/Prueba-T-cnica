@@ -10,8 +10,8 @@
 ## 1. Respuestas a Preguntas Conceptuales
 
 ### Pregunta 1: ¿Qué es el RequestId, para qué sirve y en qué casos se repite?
-- **Definición y Propósito:**
-  El `requestId` es el identificador único numérico generado por Placetopay al crear una sesión de pago, Funciona como la clave primaria del lado de la pasarela para identificar unívocamente una intención de pago o sesión transaccional.
+- **Definición:**
+  El `requestId` es el identificador único numérico generado por Placetopay al crear una sesión de pago, Funciona como la clave primaria del lado de la pasarela para identificar unícamente una intención de pago o sesión transaccional.
 - **¿Para qué sirve?:**
   1. **Consulta de Estado (`Querying`):** Permite al comercio consultar el estado actual del proceso (`POST /api/session/{requestId}`) para saber si el usuario completó el pago, lo canceló o sigue en trámite.
   2. **Trazabilidad y Conciliación:** Es el identificador correlativo con el que los equipos de soporte técnico, conciliación bancaria y auditoría rastrean el ciclo de vida de la transacción en los registros de Placetopay.
