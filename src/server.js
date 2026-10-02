@@ -109,14 +109,21 @@ export const server = http.createServer(async (req, res) => {
 
       // Preparar payload para Placetopay WebCheckout
       const returnUrl = payload.returnUrl || `http://${req.headers.host || 'localhost:3000'}/?status=return`;
+      const numTotal = typeof payload.payment.amount === 'object' && payload.payment.amount !== null
+        ? Number(payload.payment.amount.total)
+        : Number(payload.payment.amount);
+      const strCurrency = typeof payload.payment.amount === 'object' && payload.payment.amount !== null && payload.payment.amount.currency
+        ? payload.payment.amount.currency
+        : (payload.payment.currency || 'COP');
+
       const sessionPayload = {
         buyer: payload.buyer,
         payment: {
           reference: payload.payment.reference,
           description: payload.payment.description,
           amount: {
-            currency: payload.payment.currency || 'COP',
-            total: payload.payment.amount
+            currency: strCurrency,
+            total: numTotal
           }
         },
         expiration: new Date(Date.now() + 15 * 60 * 1000).toISOString(),
@@ -125,23 +132,31 @@ export const server = http.createServer(async (req, res) => {
         userAgent: req.headers['user-agent'] || 'Evertec-Mockup-Client/1.0'
       };
 
-      const result = await placetopayService.createWebcheckoutSession(sessionPayload);
+      const result = await placetopayService.createWebcheckoutSession(sessionPayload, db);
+      const sessionRecord = result.requestId ? db.getSessionByRequestId(result.requestId) : null;
       
       // Guardar también transacción inicial PENDING para trazabilidad de evidencias
       db.saveTransaction({
-        sessionId: result.requestId ? String(result.requestId) : null,
+        sessionId: sessionRecord ? sessionRecord.id : null,
         channel: 'WEBCHECKOUT',
         reference: payload.payment.reference,
         status: 'PENDING',
-        statusReason: 'PC',
-        statusMessage: 'La petición se encuentra activa en WebCheckout',
-        amount: payload.payment.amount,
-        currency: payload.payment.currency || 'COP',
-        rawPayload: result
+        statusReason: result.status?.reason || 'PC',
+        statusMessage: result.status?.message || 'La petición se encuentra activa en WebCheckout',
+        amount: numTotal,
+        currency: strCurrency,
+        rawPayload: {
+          requestId: result.requestId,
+          processUrl: result.processUrl,
+          status: result.status,
+          buyer: payload.buyer,
+          payment: payload.payment,
+          sessionResponse: result
+        }
       });
 
       return sendJson(res, 200, {
-        success: true,
+        success: result.success,
         channel: 'WEBCHECKOUT',
         requestId: result.requestId,
         processUrl: result.processUrl,

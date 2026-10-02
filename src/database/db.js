@@ -237,7 +237,7 @@ export function initDatabase(dbPath = defaultDbPath) {
         txData.statusReason || '',
         txData.statusMessage || '',
         txData.paymentMethod || 'UNKNOWN',
-        txData.amount,
+        typeof txData.amount === 'object' && txData.amount !== null ? (txData.amount.total || 0) : Number(txData.amount || 0),
         txData.currency || 'COP',
         typeof txData.rawPayload === 'object' ? JSON.stringify(txData.rawPayload) : (txData.rawPayload || '')
       );
@@ -250,6 +250,15 @@ export function initDatabase(dbPath = defaultDbPath) {
         return db.prepare(`SELECT * FROM transactions WHERE status = ? ORDER BY created_at DESC`).all(status);
       }
       return db.prepare(`SELECT * FROM transactions ORDER BY created_at DESC`).all();
+    },
+
+    getTransactionByReference(reference) {
+      const stmt = db.prepare(`SELECT * FROM transactions WHERE reference = ?`);
+      const row = stmt.get(reference);
+      if (row && row.raw_payload) {
+        try { row.raw_payload = JSON.parse(row.raw_payload); } catch (e) {}
+      }
+      return row;
     },
 
     saveAuditLog(logData) {
