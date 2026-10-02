@@ -82,6 +82,13 @@ classDiagram
         +Preparar merge humano
         +Consume: git-workflow, sdd-validator
     }
+    class FrontendUXArchitect {
+        +Diseñar mockup UI/UX
+        +Garantizar WCAG 2.1 AA A11y
+        +Optimizar SEO y Schema.org
+        +Maximizar Core Web Vitals
+        +Consume: a11y-accessibility, seo-optimizer, web-performance-best-practices, sdd-validator
+    }
 ```
 
 ### 3.1. Agente: `SDD-Architect`
@@ -134,11 +141,26 @@ classDiagram
   - `git-workflow`: Procedimiento canónico de control de versiones en SDD.
   - `sdd-validator`: Verificación de consistencia previa a la emisión de merge requests.
 
+### 3.6. Agente: `Frontend-UX-Architect`
+- **Rol:** Especialista en diseño de interacción, experiencia de usuario (UI/UX), accesibilidad (A11y), SEO técnico y alto rendimiento frontend.
+- **Responsabilidades:**
+  - Diseñar e implementar el mockup visual interactivo de la tienda virtual y carrito de compras (MVP) basado estrictamente en el Design System corporativo de Evertec (Naranja Evertec `#FF5900`, Azul Marino Financiero `#0B192C`, Azul Acento `#0077CC`).
+  - Asegurar la conformidad plena con el estándar **WCAG 2.1 Nivel AA** (contrastes de color validados >= 4.5:1, navegación completa por teclado, roles y etiquetas ARIA en formularios, enlaces de salto).
+  - Maximizar el posicionamiento y estructuración semántica (**SEO On-Page**, metadatos OpenGraph, Twitter Cards y marcado enriquecido JSON-LD Schema.org de catálogo de productos).
+  - Optimizar el rendimiento y las métricas de **Core Web Vitals** (LCP < 1.8s, INP < 100ms, CLS < 0.05) con arquitectura ligera en JavaScript nativo y CSS responsivo Mobile-First sin sobrecarga de dependencias.
+  - Conectar el formulario de pago y carrito con los contratos backend de Placetopay validados en Spec-03 (WebCheckout y Gateway Direct).
+- **Skills Consumidas:**
+  - `a11y-accessibility`: Directrices y auditoría WCAG 2.1 AA.
+  - `seo-optimizer`: Estructuración semántica, metadatos y Schema.org.
+  - `web-performance-best-practices`: Core Web Vitals y directrices UX transaccionales.
+  - `sdd-validator`: Conformidad con la metodología SDD.
+
 ---
 
 ## 4. Directorio de Customizaciones del Arnés
 
 Las configuraciones operativas del arnés se encuentran organizadas en:
 - `.agents/rules/`: Reglas de cumplimiento forzoso (`guardrails.md`, `sdd-lifecycle.md`, `branching-strategy.md`).
-- `.agents/skills/`: Procedimientos operacionales ejecutables por los agentes (`sdd-validator/`, `placetopay-auth/`, `git-workflow/`).
+- `.agents/skills/`: Procedimientos operacionales ejecutables por los agentes (`sdd-validator/`, `placetopay-auth/`, `git-workflow/`, `a11y-accessibility/`, `seo-optimizer/`, `web-performance-best-practices/`).
 - `scripts/`: Herramientas de automatización para validación y testing.
+
