@@ -149,7 +149,7 @@ Desde ayer, las transacciones del comercio no pueden procesarse por el mensaje: 
 ```text
 Asunto: [URGENTE - PRIORIDAD ALTA] Diagnóstico y Solución Inmediata - Error de Autenticación 102 - Comercio [Nombre del Comercio]
 
-Estimado [Nombre del Contacto / Director de Tecnología / Gerente],
+Estimado Cliente,
 
 Reciba un cordial saludo de parte del equipo de ingeniería e implementaciones de Placetopay (Evertec).
 
@@ -171,11 +171,11 @@ Reiteramos nuestro compromiso absoluto con el éxito de su operación.
 
 Atentamente,
 
-[Tu Nombre]
-Analista Senior de Implementaciones y Soporte Técnico
+Cristian Torres
 Placetopay | Evertec
 Teléfono directo: +57 (4) 444-XXXX
 ```
+
 
 ---
 
@@ -233,12 +233,11 @@ Checklist de Verificación Rápida:
 - `seed`: Cadena de texto con fecha en formato ISO 8601 (ej. YYYY-MM-DDTHH:mm:ssZ).
 - Cabecera HTTP: 'Content-Type: application/json; charset=utf-8'.
 
-Estamos disponibles en este momento en el puente técnico para acompañar el ajuste en tiempo real y validar las primeras transacciones de prueba: [Enlace Sala Técnica].
+Estamos disponibles en este momento en el puente técnico para acompañar el ajuste en tiempo real y validar las primeras transacciones de prueba.
 
 Atentamente,
 
-[Tu Nombre]
-Analista de Implementaciones
+Cristian Torres
 Placetopay | Evertec
 ```
 
@@ -265,9 +264,7 @@ El comercio "Sunshine" no logra comprender la integración tras múltiples expli
 ```text
 Asunto: Nueva Guía Paso a Paso y Acompañamiento Práctico para la Integración - Sunshine & Placetopay
 
-Hola [Nombre del Contacto / Equipo de Sunshine],
-
-¡Es un gusto saludarte!
+Estimado cliente,
 
 Agradecemos sinceramente tu franqueza al compartirnos cómo se sienten. Comprendemos totalmente que integrar una pasarela de pagos por primera vez involucra conceptos criptográficos y flujos que pueden resultar complejos si solo se explican a través de manuales teóricos.
 
@@ -294,8 +291,7 @@ Estamos aquí para apoyarlos hasta que su tienda esté vendiendo con éxito.
 
 Un cordial saludo,
 
-[Tu Nombre]
-Analista de Implementaciones
+Cristian Torres
 Placetopay | Evertec
 ```
 
@@ -322,7 +318,7 @@ La situación con "Sunshine" escaló negativamente. El cliente se muestra extrem
 ```text
 Asunto: [ALTA PRIORIDAD] Plan de Acción Inmediato y Compromiso de Servicio - Sunshine & Placetopay
 
-Estimado [Nombre del Directivo / Representante de Sunshine],
+Estimado Cliente,
 
 Agradezco su mensaje y lamento profundamente la frustración que esta situación le ha causado a usted y a su equipo.
 
@@ -342,8 +338,7 @@ Agradecemos la oportunidad de demostrarle el nivel de excelencia técnica y comp
 
 Atentamente,
 
-[Tu Nombre]
-Analista de Implementaciones
+Cristian Torres
 En conjunto con:
 [Nombre del Líder de Implementaciones]
 Head de Implementaciones y Soluciones Técnicas
@@ -432,5 +427,3 @@ La siguiente tabla resume las tarjetas oficiales documentadas para validar todos
 | **Visa 3D-Secure (Challenge)** | `4111 1111 1111 1111` (con 3DS) | Futura / 123 | **CHALLENGE (OTP)** | Reto 3DS (`C`) | Despliega pantalla de autenticación bancaria. Ingresar código OTP: **`12345`** para aprobar. |
 
 ---
-
-*Documento elaborado bajo estándares de gobernanza y aseguramiento de calidad SDD.*
