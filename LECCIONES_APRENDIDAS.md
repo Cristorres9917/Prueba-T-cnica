@@ -62,3 +62,17 @@ Este documento recopila las lecciones aprendidas, patrones arquitectónicos cons
   - *Contexto:* Al levantar y destruir servidores HTTP efímeros en Node.js v24 sobre Windows mientras la base de datos `node:sqlite` se encuentra abierta, libuv puede disparar aserciones en `async.c`.
   - *Aprendizaje:* La orquestación mediante subprocesos (`spawn`) y el cierre explícito de los descriptores de base de datos (`db.close()`) garantizan una ejecución de pruebas limpia y determinista en entornos Windows.
 
+---
+
+## 7. Tienda de Smartphones, Checkout Modal y Simplificación de Pasarela (Spec-05)
+- **Lección 13: Resiliencia de Eventos con `pointer-events: none` en Iconos de Botones.**
+  - *Contexto:* En botones complejos con iconos SVG y textos anidados (como `#cart-toggle-btn`), los clics del usuario sobre los paths o spans hijos pueden interferir en la detección del evento click si el desarrollador consulta `event.target`.
+  - *Aprendizaje:* Aplicar la regla CSS `.cart-btn * { pointer-events: none; }` canaliza de forma infalible todos los eventos de interacción al elemento raíz interactivo `<button>`, eliminando fallos intermitentes de apertura del drawer.
+- **Lección 14: Encapsulación en Modal y Reducción de Fricción Cognitiva.**
+  - *Contexto:* Desplazar al usuario por scroll a un formulario incrustado en el cuerpo de la página interrumpe la navegación y expone detalles técnicos innecesarios (como selectores de canal y datos de tarjeta directa).
+  - *Aprendizaje:* Al mover el checkout a un modal interactivo (`#checkout-modal`) y predeterminar WebCheckout por debajo, el usuario solo diligencia los datos indispensables del comprador y es transferido a la pasarela bancaria oficial de Placetopay, cumpliendo los más altos estándares de UX e-commerce y seguridad PCI-DSS.
+- **Lección 15: Tipado Estricto de Parámetros en Claves Foráneas de SQLite.**
+  - *Contexto:* La normalización de contratos puede transformar primitivos numéricos en objetos (ej. `payment.amount` $\rightarrow$ `{ total, currency }`). Si un valor de tipo objeto se intenta vincular a un parámetro numérico en `node:sqlite` (`DatabaseSync`), la base de datos aborta con `Provided value cannot be bound to SQLite parameter`. Asimismo, asignar un `requestId` externo al campo `session_id` viola la restricción `FOREIGN KEY (session_id) REFERENCES payment_sessions(id)`.
+  - *Aprendizaje:* La extracción explícita `typeof amount === 'object' ? amount.total : amount` y la resolución de la clave primaria autoincremental `sessionRecord.id` aseguran integridad referencial absoluta en SQLite.
+
+
