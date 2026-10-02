@@ -203,21 +203,44 @@ CREATE TABLE IF NOT EXISTS audit_logs (
 
 ---
 
-## 4. Estrategia de Demostración de Evidencias (Prueba Técnica)
+## 4. Estrategia de Demostración de Evidencias y Estados Transaccionales
 
-La prueba técnica solicita compartir evidencias del flujo transaccional con sus tres resultados:
-1. **PENDIENTE:** 
-   - Se evidencia inmediatamente tras la creación de sesión con `POST /api/session`. La pasarela responde `status.status = "OK"` y la sesión queda en `PENDING` ("La petición se encuentra activa") hasta que el usuario final introduzca su medio de pago.
-2. **APROBADO:**
-   - En el entorno WebCheckout (`checkout-test.placetopay.com`), ingresando datos de tarjeta de prueba válida con autorización exitosa (`status = "APPROVED"`, recibo y código de autorización generados).
-3. **RECHAZADO:**
-   - Ingresando una tarjeta de prueba de rechazo o forzando la cancelación de la sesión por el pagador (`status = "REJECTED"` con mensaje de motivo de rechazo).
+La prueba técnica exige evidenciar el flujo transaccional en sus tres resultados finales:
+1. **PENDIENTE (`PENDING`):**
+   - Estado natural tras la creación de sesión con `POST /api/session`. La pasarela responde `status.status = "OK"` y la sesión queda en `PENDING` (`reason: "PC"`, *"La petición se encuentra activa"*) hasta que el pagador interactúe o culmine el pago asíncrono.
+2. **APROBADO (`APPROVED`):**
+   - Transacción completada satisfactoriamente (`reason: "00"`). Se captura y persiste el número de recibo (`receipt`), código de autorización bancaria (`authorization`), franquicia y fecha/hora.
+3. **RECHAZADO (`REJECTED` / `FAILED`):**
+   - Declinación de la transacción. A continuación se desglosa la matriz exhaustiva de tipologías y causas reales de rechazo.
 
 ---
 
-## 5. Criterios de Aceptación (AC)
+## 5. Matriz Exhaustiva de Motivos de Rechazo (Placetopay / Evertec)
+
+Un rechazo transaccional nunca es genérico; responde a causales bancarias, de riesgo, de usuario o técnicas:
+
+| Categoría | Código Reason | Mensaje / Causa | Origen | Acción Sugerida al Comercio / Pagador |
+| :--- | :--- | :--- | :--- | :--- |
+| **Banco Emisor** | `05` / `51` / `RM` | Fondos insuficientes / Límite de cupo excedido | Entidad Financiera | Invitar al usuario a consultar su saldo o utilizar otro medio de pago. |
+| **Banco Emisor** | `14` / `54` | Tarjeta vencida / Fecha de expiración inválida | Franquicia / Emisor | Solicitar al usuario verificar el mes/año de vencimiento o renovar el plástico. |
+| **Banco Emisor** | `55` / `82` | CVV / CVC inválido o PIN erróneo | Validación Criptográfica | Solicitar verificar el código de 3 o 4 dígitos al reverso de la tarjeta. |
+| **Banco Emisor** | `12` / `57` | Transacción no permitida a la tarjeta / e-commerce bloqueado | Banco Emisor | Indicar al cliente que comunique con su banco para habilitar compras por internet. |
+| **Banco Emisor** | `04` / `41` / `43` | Tarjeta reportada como extraviada, robada o bloqueada | Red de Pagos / Emisor | Bloquear la operación; tarjeta retenida por protocolo de seguridad. |
+| **Banco Emisor** | `61` | Excede el monto límite permitido por operación | Banco Emisor | Recomendar realizar el pago en montos fraccionados o elevar cupo con el banco. |
+| **Usuario** | `?C` | Proceso cancelado voluntariamente por el pagador | WebCheckout UI | El usuario pulsó "Cancelar y volver al comercio"; registrar abandono y ofrecer retomar compra. |
+| **Usuario** | `EX` | Sesión expirada por inactividad | Time-to-Live (TTL) | El usuario superó el tiempo de vigencia de la sesión (`expiration`); generar nueva sesión. |
+| **Riesgo / Antifraude** | `AF` / `RISK` | Declinada por motor de prevención de fraude | Cybersource / RedShield | Parámetros anómalos (IP en lista negra, geolocalización inconsistente, alta velocidad de intentos). |
+| **Conectividad / Red** | `91` / `TO` / `XN` | Time-out bancario / Entidad financiera no disponible | Adquirente / Red | Problemas de comunicación transitoria; sugerir reintentar en unos minutos. |
+| **Técnico / Integración**| `102` | Autenticación fallida | Gateway Placetopay | Desincronización horaria en `seed`, `secretKey` errónea o firma `tranKey` mal calculada. |
+| **Técnico / Integración**| `100` | Autenticación mal formada | Validación de API | Objeto `auth` incompleto, `nonce` corrupto o tipos de datos alterados. |
+| **Técnico / Negocio** | `BR` | Solicitud inválida / Regla de negocio no satisfecha | Validación Gateway | Faltan campos mandatorios del comprador o moneda no soportada por el comercio. |
+
+---
+
+## 6. Criterios de Aceptación (AC)
 
 - **AC-3.1:** El diccionario de datos describe con exactitud campos, tipos y validaciones del mockup.
 - **AC-3.2:** Los endpoints `/api/checkout/session`, `/api/checkout/status/:requestId` y `/api/transactions/evidences` quedan formalmente especificados.
 - **AC-3.3:** El esquema relacional SQLite (`payment_sessions`, `transactions`, `audit_logs`) está completamente diseñado para soportar auditoría y los 3 estados.
-- **AC-3.4:** La suite de pruebas de Agentest 003 verifica los modelos y la generación de firmas de autenticación.
+- **AC-3.4:** Se documenta la Matriz Exhaustiva de Motivos de Rechazo detallando causas bancarias, de usuario, antifraude y técnicas.
+- **AC-3.5:** La suite de pruebas de Agentest 003 verifica los modelos, la generación de firmas de autenticación y la persistencia de los múltiples motivos de rechazo.
