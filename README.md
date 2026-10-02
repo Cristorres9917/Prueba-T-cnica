@@ -203,4 +203,24 @@ Contenido del documento:
 
 ---
 
+## 📬 8. Pruebas de API en Postman y Evidencias Fotográficas
+
+El proyecto incluye la colección oficial de Postman lista para importar:
+👉 **[`postman_collection.json`](postman_collection.json)**
+
+Y la guía técnica humanizada con el análisis de cada endpoint y el registro fotográfico de 6 capturas en Sandbox:
+👉 **[`docs/soporte/guia-pruebas-postman-y-evidencias.md`](docs/soporte/guia-pruebas-postman-y-evidencias.md)**
+
+### Peticiones Incluidas:
+- **WebCheckout Sandbox:** Creación de sesión (`POST /api/session`) y consulta de estado (`POST /api/session/{{requestId}}`).
+- **API Gateway Sandbox:** Cobro directo aprobado (Visa 4111), cobro rechazado (Visa 4110), rechazo por fondos insuficientes (XA) y consulta por referencia interna (`POST /gateway/query`).
+- **Backend Local:** Creación y sincronización transaccional en SQLite (`http://localhost:3000`).
+
+Para ejecutar el test automatizado de verificación de la colección y evidencias:
+```bash
+pnpm run test:spec8
+```
+
+---
+
 *Desarrollado con excelencia técnica por un candidato a Analista de Implementaciones Nivel 1 en Placetopay / Evertec.*
