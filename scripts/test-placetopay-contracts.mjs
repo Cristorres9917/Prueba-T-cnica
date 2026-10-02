@@ -184,31 +184,38 @@ await assertTest('TEST-3.8', 'Persistencia de evidencias para los 3 estados tran
     rawPayload: { simulated: true, state: 'APPROVED', authCode: '000192' }
   });
 
-  // Registrar evidencia RECHAZADO
-  const txRejected = db.saveTransaction({
-    sessionId: null,
-    channel: 'GATEWAY',
-    reference: 'EVID-REJECTED-001',
-    internalReference: '1099239',
-    status: 'REJECTED',
-    statusReason: '05',
-    statusMessage: 'Transacción declinada por fondos insuficientes',
-    paymentMethod: 'MASTERCARD',
-    amount: 450000,
-    currency: 'COP',
-    rawPayload: { simulated: true, state: 'REJECTED', declineCode: '05' }
-  });
+  // Registrar evidencias de RECHAZOS por diversas causales del ecosistema Placetopay / Evertec
+  const rejectionsToTest = [
+    { ref: 'EVID-REJ-FONDOS', reason: '05', msg: 'Fondos insuficientes / Límite de cupo excedido', brand: 'MASTERCARD', amount: 450000, channel: 'GATEWAY' },
+    { ref: 'EVID-REJ-VENCIDA', reason: '54', msg: 'Tarjeta vencida / Fecha de expiración inválida', brand: 'VISA', amount: 120000, channel: 'GATEWAY' },
+    { ref: 'EVID-REJ-CVV', reason: '55', msg: 'CVV / Código de seguridad inválido', brand: 'AMEX', amount: 85000, channel: 'GATEWAY' },
+    { ref: 'EVID-REJ-CANCELADO', reason: '?C', msg: 'Proceso cancelado voluntariamente por el pagador', brand: 'PSE', amount: 320000, channel: 'WEBCHECKOUT' },
+    { ref: 'EVID-REJ-ANTIFRAUDE', reason: 'AF', msg: 'Declinada por motor de prevención de fraude (scoring Cybersource)', brand: 'VISA', amount: 1500000, channel: 'GATEWAY' },
+    { ref: 'EVID-REJ-NO-PERMITIDA', reason: '12', msg: 'Transacción no permitida a la tarjeta / e-commerce bloqueado por emisor', brand: 'MASTERCARD', amount: 210000, channel: 'GATEWAY' }
+  ];
 
-  if (!txPending || !txApproved || !txRejected) {
-    throw new Error('Fallo al registrar las tres transacciones de evidencia');
+  for (const rej of rejectionsToTest) {
+    db.saveTransaction({
+      sessionId: null,
+      channel: rej.channel,
+      reference: rej.ref,
+      internalReference: 'INT-' + Math.floor(Math.random() * 900000 + 100000),
+      status: 'REJECTED',
+      statusReason: rej.reason,
+      statusMessage: rej.msg,
+      paymentMethod: rej.brand,
+      amount: rej.amount,
+      currency: 'COP',
+      rawPayload: { simulated: true, state: 'REJECTED', declineCode: rej.reason, reasonDescription: rej.msg }
+    });
   }
 
   const approvedList = db.getTransactions('APPROVED');
   const pendingList = db.getTransactions('PENDING');
   const rejectedList = db.getTransactions('REJECTED');
 
-  if (approvedList.length === 0 || pendingList.length === 0 || rejectedList.length === 0) {
-    throw new Error('No se encontraron registros para los 3 estados obligatorios');
+  if (approvedList.length === 0 || pendingList.length === 0 || rejectedList.length < 6) {
+    throw new Error(`Se esperaban al menos 6 rechazos con distintos motivos, pero se encontraron ${rejectedList.length}`);
   }
 });
 
