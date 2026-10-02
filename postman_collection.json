@@ -1,0 +1,496 @@
+{
+  "info": {
+    "_postman_id": "c1f7a04b-8e24-4f81-9b16-evertec-p2p",
+    "name": "Placetopay Evertec PayShop - API Collection (Sandbox & Local)",
+    "description": "Colección oficial de Postman para probar los servicios de Placetopay WebCheckout, API Gateway y el Backend local de la tienda virtual Evertec PayShop (Prueba Técnica Analista de Implementaciones).\n\nIncluye Pre-request Scripts con cálculo automático de autenticación criptográfica (seed, nonce y tranKey SHA-256 + Base64), sin necesidad de calcular hashes manualmente.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "checkoutUrl",
+      "value": "https://checkout-test.placetopay.com",
+      "type": "string"
+    },
+    {
+      "key": "gatewayUrl",
+      "value": "https://api-test.placetopay.com/rest",
+      "type": "string"
+    },
+    {
+      "key": "localApiUrl",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "login",
+      "value": "2d9eaf1e662518756a3d78806543af5b",
+      "type": "string"
+    },
+    {
+      "key": "secretKey",
+      "value": "3YC5brb5eAR4xBGQ",
+      "type": "string"
+    },
+    {
+      "key": "requestId",
+      "value": "3875443",
+      "type": "string"
+    },
+    {
+      "key": "dynamicRef",
+      "value": "P2P-DEMO-REF-001",
+      "type": "string"
+    },
+    {
+      "key": "seed",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "nonce",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "tranKey",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "processUrl",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "🌐 1. Placetopay WebCheckout (Sandbox Directo)",
+      "description": "Consumo directo contra los endpoints oficiales de Placetopay Sandbox (https://checkout-test.placetopay.com/). Los Pre-request Scripts generan automáticamente el bloque criptográfico 'auth'.",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// Generación dinámica del objeto de autenticación canónico Placetopay",
+              "const seed = new Date().toISOString();",
+              "const rawNonce = CryptoJS.lib.WordArray.random(16);",
+              "const nonce = CryptoJS.enc.Base64.stringify(rawNonce);",
+              "const secretKey = pm.collectionVariables.get('secretKey') || '3YC5brb5eAR4xBGQ';",
+              "",
+              "// tranKey = Base64(SHA256(rawNonce + seed + secretKey))",
+              "const combined = rawNonce.clone().concat(CryptoJS.enc.Utf8.parse(seed + secretKey));",
+              "const tranKey = CryptoJS.enc.Base64.stringify(CryptoJS.SHA256(combined));",
+              "",
+              "pm.collectionVariables.set('seed', seed);",
+              "pm.collectionVariables.set('nonce', nonce);",
+              "pm.collectionVariables.set('tranKey', tranKey);",
+              "pm.collectionVariables.set('dynamicRef', 'P2P-WEB-' + Date.now());"
+            ]
+          }
+        }
+      ],
+      "item": [
+        {
+          "name": "1.1 Crear Sesión WebCheckout (POST /api/session)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const res = pm.response.json();",
+                  "pm.test('Status code 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Sesión creada exitosamente (status OK)', function () {",
+                  "    pm.expect(res.status.status).to.eql('OK');",
+                  "    pm.expect(res.requestId).to.be.a('number');",
+                  "    pm.expect(res.processUrl).to.be.a('string');",
+                  "});",
+                  "if (res.requestId) {",
+                  "    pm.collectionVariables.set('requestId', res.requestId.toString());",
+                  "    pm.collectionVariables.set('processUrl', res.processUrl);",
+                  "    console.log('✅ RequestId guardado para siguientes llamadas:', res.requestId);",
+                  "    console.log('🔗 URL para pagar en el navegador:', res.processUrl);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"auth\": {\n    \"login\": \"{{login}}\",\n    \"tranKey\": \"{{tranKey}}\",\n    \"nonce\": \"{{nonce}}\",\n    \"seed\": \"{{seed}}\"\n  },\n  \"buyer\": {\n    \"name\": \"Carlos\",\n    \"surname\": \"Gómez\",\n    \"email\": \"carlos.gomez@evertecinc.com\",\n    \"document\": \"1020304050\",\n    \"documentType\": \"CC\",\n    \"mobile\": \"3001234567\",\n    \"address\": {\n      \"street\": \"Carrera 7 # 72-01\",\n      \"city\": \"Bogotá\"\n    }\n  },\n  \"payment\": {\n    \"reference\": \"{{dynamicRef}}\",\n    \"description\": \"Compra de Smartphone Apple iPhone 16 Pro Max\",\n    \"amount\": {\n      \"currency\": \"COP\",\n      \"total\": 6499000\n    },\n    \"allowPartial\": false,\n    \"subscribe\": false\n  },\n  \"expiration\": \"2026-10-03T12:00:00-05:00\",\n  \"returnUrl\": \"{{localApiUrl}}/?status=return&reference={{dynamicRef}}\",\n  \"ipAddress\": \"127.0.0.1\",\n  \"userAgent\": \"Postman-Evertec-Tester/1.0\"\n}"
+            },
+            "url": {
+              "raw": "{{checkoutUrl}}/api/session",
+              "host": ["{{checkoutUrl}}"],
+              "path": ["api", "session"]
+            }
+          }
+        },
+        {
+          "name": "1.2 Consultar Estado de Sesión (POST /api/session/{{requestId}})",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const res = pm.response.json();",
+                  "pm.test('Status code 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Retorna objeto status de la sesión', function () {",
+                  "    pm.expect(res.status).to.be.an('object');",
+                  "    console.log('Estado actual de la sesión:', res.status.status, '-', res.status.message);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"auth\": {\n    \"login\": \"{{login}}\",\n    \"tranKey\": \"{{tranKey}}\",\n    \"nonce\": \"{{nonce}}\",\n    \"seed\": \"{{seed}}\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{checkoutUrl}}/api/session/{{requestId}}",
+              "host": ["{{checkoutUrl}}"],
+              "path": ["api", "session", "{{requestId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "💳 2. Placetopay API Gateway (Sandbox Directo)",
+      "description": "Consumo de API Gateway REST directo (https://api-test.placetopay.com/rest). Simula autorizaciones directas server-to-server con tarjetas de crédito.",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const seed = new Date().toISOString();",
+              "const rawNonce = CryptoJS.lib.WordArray.random(16);",
+              "const nonce = CryptoJS.enc.Base64.stringify(rawNonce);",
+              "const secretKey = pm.collectionVariables.get('secretKey') || '3YC5brb5eAR4xBGQ';",
+              "const combined = rawNonce.clone().concat(CryptoJS.enc.Utf8.parse(seed + secretKey));",
+              "const tranKey = CryptoJS.enc.Base64.stringify(CryptoJS.SHA256(combined));",
+              "",
+              "pm.collectionVariables.set('seed', seed);",
+              "pm.collectionVariables.set('nonce', nonce);",
+              "pm.collectionVariables.set('tranKey', tranKey);",
+              "pm.collectionVariables.set('dynamicRef', 'P2P-GW-' + Date.now());"
+            ]
+          }
+        }
+      ],
+      "item": [
+        {
+          "name": "2.1 Procesar Pago Tarjeta APROBADA (Visa 4111 1111...)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"auth\": {\n    \"login\": \"{{login}}\",\n    \"tranKey\": \"{{tranKey}}\",\n    \"nonce\": \"{{nonce}}\",\n    \"seed\": \"{{seed}}\"\n  },\n  \"buyer\": {\n    \"name\": \"Laura\",\n    \"surname\": \"Méndez\",\n    \"email\": \"laura.mendez@evertecinc.com\",\n    \"document\": \"1020304050\",\n    \"documentType\": \"CC\"\n  },\n  \"payment\": {\n    \"reference\": \"{{dynamicRef}}\",\n    \"description\": \"Cobro directo Gateway Tarjeta Aprobada\",\n    \"amount\": {\n      \"currency\": \"COP\",\n      \"total\": 5899000\n    }\n  },\n  \"instrument\": {\n    \"card\": {\n      \"number\": \"4111111111111111\",\n      \"expirationMonth\": \"12\",\n      \"expirationYear\": \"28\",\n      \"cvv\": \"123\",\n      \"installments\": 1\n    }\n  }\n}"
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}/gateway/process",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["gateway", "process"]
+            }
+          }
+        },
+        {
+          "name": "2.2 Procesar Pago Tarjeta RECHAZADA (Visa 4110 7600 0000 0016)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"auth\": {\n    \"login\": \"{{login}}\",\n    \"tranKey\": \"{{tranKey}}\",\n    \"nonce\": \"{{nonce}}\",\n    \"seed\": \"{{seed}}\"\n  },\n  \"buyer\": {\n    \"name\": \"Mariana\",\n    \"surname\": \"Gómez\",\n    \"email\": \"mariana.gomez@evertecinc.com\",\n    \"document\": \"987654321\",\n    \"documentType\": \"CC\"\n  },\n  \"payment\": {\n    \"reference\": \"{{dynamicRef}}\",\n    \"description\": \"Cobro directo Gateway Tarjeta Denegada\",\n    \"amount\": {\n      \"currency\": \"COP\",\n      \"total\": 4500000\n    }\n  },\n  \"instrument\": {\n    \"card\": {\n      \"number\": \"4110760000000016\",\n      \"expirationMonth\": \"12\",\n      \"expirationYear\": \"28\",\n      \"cvv\": \"123\",\n      \"installments\": 1\n    }\n  }\n}"
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}/gateway/process",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["gateway", "process"]
+            }
+          }
+        },
+        {
+          "name": "2.3 Procesar Pago Fondos Insuficientes (Causal XA)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"auth\": {\n    \"login\": \"{{login}}\",\n    \"tranKey\": \"{{tranKey}}\",\n    \"nonce\": \"{{nonce}}\",\n    \"seed\": \"{{seed}}\"\n  },\n  \"buyer\": {\n    \"name\": \"Andrés\",\n    \"surname\": \"Pérez\",\n    \"email\": \"andres.perez@evertecinc.com\",\n    \"document\": \"79888999\",\n    \"documentType\": \"CC\"\n  },\n  \"payment\": {\n    \"reference\": \"{{dynamicRef}}\",\n    \"description\": \"Cobro directo Fondos Insuficientes XA\",\n    \"amount\": {\n      \"currency\": \"COP\",\n      \"total\": 99999999\n    }\n  },\n  \"instrument\": {\n    \"card\": {\n      \"number\": \"4110760000000016\",\n      \"expirationMonth\": \"12\",\n      \"expirationYear\": \"28\",\n      \"cvv\": \"123\",\n      \"installments\": 1\n    }\n  }\n}"
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}/gateway/process",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["gateway", "process"]
+            }
+          }
+        },
+        {
+          "name": "2.4 Consultar Transacción en Gateway Directo",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"auth\": {\n    \"login\": \"{{login}}\",\n    \"tranKey\": \"{{tranKey}}\",\n    \"nonce\": \"{{nonce}}\",\n    \"seed\": \"{{seed}}\"\n  },\n  \"internalReference\": \"1234567\"\n}"
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}/gateway/query",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["gateway", "query"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🏪 3. Evertec PayShop Backend Local (Node.js & SQLite)",
+      "description": "Endpoints expuestos por el servidor local de la tienda virtual (http://localhost:3000). Gestionan la persistencia en SQLite, auditoría y sincronización de sesiones.",
+      "item": [
+        {
+          "name": "3.1 Iniciar Sesión WebCheckout desde Tienda (POST /api/checkout/session)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.collectionVariables.set('dynamicRef', 'SHOP-REF-' + Date.now());"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const res = pm.response.json();",
+                  "pm.test('Status code 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Backend local crea sesión en Placetopay y persiste en SQLite', function () {",
+                  "    pm.expect(res.success).to.be.true;",
+                  "    pm.expect(res.requestId).to.be.a('number');",
+                  "    pm.expect(res.processUrl).to.be.a('string');",
+                  "});",
+                  "if (res.requestId) {",
+                  "    pm.collectionVariables.set('requestId', res.requestId.toString());",
+                  "    pm.collectionVariables.set('processUrl', res.processUrl);",
+                  "    console.log('✅ Sesión creada en Backend Local. RequestId:', res.requestId);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"buyer\": {\n    \"name\": \"Mariana\",\n    \"surname\": \"López\",\n    \"email\": \"mariana.lopez@evertecinc.com\",\n    \"documentType\": \"CC\",\n    \"document\": \"1030405060\",\n    \"mobile\": \"3109876543\",\n    \"address\": {\n      \"street\": \"Avenida El Dorado # 68C-61\",\n      \"city\": \"Bogotá\"\n    }\n  },\n  \"payment\": {\n    \"reference\": \"{{dynamicRef}}\",\n    \"description\": \"Compra Samsung Galaxy S24 Ultra\",\n    \"amount\": {\n      \"currency\": \"COP\",\n      \"total\": 5899000\n    },\n    \"items\": [\n      {\n        \"sku\": \"SAM-S24U-512\",\n        \"name\": \"Samsung Galaxy S24 Ultra\",\n        \"price\": 5899000,\n        \"qty\": 1\n      }\n    ]\n  },\n  \"channel\": \"WEBCHECKOUT\"\n}"
+            },
+            "url": {
+              "raw": "{{localApiUrl}}/api/checkout/session",
+              "host": ["{{localApiUrl}}"],
+              "path": ["api", "checkout", "session"]
+            }
+          }
+        },
+        {
+          "name": "3.2 Sincronizar Estado WebCheckout con SQLite (GET /api/checkout/status/{{requestId}})",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const res = pm.response.json();",
+                  "pm.test('Status code 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Sincronización exitosa con SQLite', function () {",
+                  "    pm.expect(res.success).to.be.true;",
+                  "    pm.expect(res.status).to.be.an('string');",
+                  "    console.log('Estado sincronizado en SQLite:', res.status);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{localApiUrl}}/api/checkout/status/{{requestId}}",
+              "host": ["{{localApiUrl}}"],
+              "path": ["api", "checkout", "status", "{{requestId}}"]
+            }
+          }
+        },
+        {
+          "name": "3.3 Listar Todas las Evidencias Transaccionales (GET /api/transactions/evidences)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const res = pm.response.json();",
+                  "pm.test('Status code 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Retorna lista de transacciones desde SQLite', function () {",
+                  "    pm.expect(res.success).to.be.true;",
+                  "    pm.expect(res.transactions).to.be.an('array');",
+                  "    console.log('Total transacciones registradas:', res.transactions.length);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{localApiUrl}}/api/transactions/evidences",
+              "host": ["{{localApiUrl}}"],
+              "path": ["api", "transactions", "evidences"]
+            }
+          }
+        },
+        {
+          "name": "3.4 Filtrar Evidencias Aprobadas (GET /api/transactions/evidences?status=APPROVED)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{localApiUrl}}/api/transactions/evidences?status=APPROVED",
+              "host": ["{{localApiUrl}}"],
+              "path": ["api", "transactions", "evidences"],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "APPROVED"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "3.5 Filtrar Evidencias Pendientes (GET /api/transactions/evidences?status=PENDING)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{localApiUrl}}/api/transactions/evidences?status=PENDING",
+              "host": ["{{localApiUrl}}"],
+              "path": ["api", "transactions", "evidences"],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "PENDING"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "3.6 Filtrar Evidencias Rechazadas (GET /api/transactions/evidences?status=REJECTED)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{localApiUrl}}/api/transactions/evidences?status=REJECTED",
+              "host": ["{{localApiUrl}}"],
+              "path": ["api", "transactions", "evidences"],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "REJECTED"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "3.7 Simular Pago Gateway Directo en Tienda (POST /api/checkout/gateway)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.collectionVariables.set('dynamicRef', 'SHOP-GW-' + Date.now());"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"buyer\": {\n    \"name\": \"Esteban\",\n    \"surname\": \"Salazar\",\n    \"email\": \"esteban.salazar@evertecinc.com\",\n    \"documentType\": \"CC\",\n    \"document\": \"1122334455\",\n    \"mobile\": \"3150001122\",\n    \"address\": {\n      \"street\": \"Calle 26 # 59-51\",\n      \"city\": \"Bogotá\"\n    }\n  },\n  \"payment\": {\n    \"reference\": \"{{dynamicRef}}\",\n    \"description\": \"Compra Google Pixel 9 Pro XL\",\n    \"amount\": 5499000,\n    \"currency\": \"COP\"\n  },\n  \"card\": {\n    \"brand\": \"VISA\",\n    \"number\": \"4111 1111 1111 1111\",\n    \"expirationMonth\": \"12\",\n    \"expirationYear\": \"28\",\n    \"cvv\": \"123\",\n    \"installments\": 1\n  },\n  \"channel\": \"GATEWAY_DIRECT\"\n}"
+            },
+            "url": {
+              "raw": "{{localApiUrl}}/api/checkout/gateway",
+              "host": ["{{localApiUrl}}"],
+              "path": ["api", "checkout", "gateway"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
