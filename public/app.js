@@ -645,6 +645,60 @@ function closePayloadModal() {
   }
 }
 
+// Modal Accesible de Tarjetas de Prueba Sandbox (Placetopay)
+function openTestCardsModal() {
+  const modal = document.getElementById('test-cards-modal');
+  const overlay = document.getElementById('test-cards-overlay');
+  if (modal && overlay) {
+    modal.hidden = false;
+    overlay.hidden = false;
+    modal.style.display = 'flex';
+    overlay.style.display = 'block';
+    const closeBtn = document.getElementById('close-cards-modal-btn');
+    if (closeBtn) closeBtn.focus();
+  }
+}
+
+function closeTestCardsModal() {
+  const modal = document.getElementById('test-cards-modal');
+  const overlay = document.getElementById('test-cards-overlay');
+  if (modal && overlay) {
+    modal.hidden = true;
+    overlay.hidden = true;
+    modal.style.display = 'none';
+    overlay.style.display = 'none';
+  }
+}
+
+function copyCardNumber(number, btnElement) {
+  if (!navigator.clipboard) {
+    const tempInput = document.createElement('input');
+    tempInput.value = number;
+    document.body.appendChild(tempInput);
+    tempInput.select();
+    document.execCommand('copy');
+    document.body.removeChild(tempInput);
+  } else {
+    navigator.clipboard.writeText(number).catch(err => {
+      console.warn('Fallback al portapapeles:', err);
+    });
+  }
+
+  if (btnElement) {
+    const originalText = btnElement.textContent;
+    btnElement.textContent = '✓ ¡Copiado!';
+    btnElement.classList.add('copied');
+    setTimeout(() => {
+      btnElement.textContent = originalText;
+      btnElement.classList.remove('copied');
+    }, 2000);
+  }
+}
+
+window.openTestCardsModal = openTestCardsModal;
+window.closeTestCardsModal = closeTestCardsModal;
+window.copyCardNumber = copyCardNumber;
+
 // 7. Carga y Filtros del Tablero de Evidencias (6 Columnas Limpias)
 async function loadEvidences(filter = 'ALL') {
   const tbody = document.getElementById('evidences-tbody');
@@ -963,6 +1017,14 @@ document.addEventListener('DOMContentLoaded', () => {
   if (closeModalBtn) closeModalBtn.addEventListener('click', closePayloadModal);
   if (modalOverlay) modalOverlay.addEventListener('click', closePayloadModal);
 
+  // Eventos de Modal de Tarjetas Sandbox
+  const testCardsBtn = document.getElementById('test-cards-btn');
+  const closeCardsBtn = document.getElementById('close-cards-modal-btn');
+  const cardsOverlay = document.getElementById('test-cards-overlay');
+  if (testCardsBtn) testCardsBtn.addEventListener('click', openTestCardsModal);
+  if (closeCardsBtn) closeCardsBtn.addEventListener('click', closeTestCardsModal);
+  if (cardsOverlay) cardsOverlay.addEventListener('click', closeTestCardsModal);
+
   // Tecla Escape para cerrar modales o drawer activos
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
@@ -971,6 +1033,7 @@ document.addEventListener('DOMContentLoaded', () => {
       closeHistoryModal();
       closeDetailModal();
       closePayloadModal();
+      closeTestCardsModal();
     }
   });
 

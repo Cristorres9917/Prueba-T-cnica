@@ -28,7 +28,7 @@
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230B192C'/><path d='M25 50 L50 25 L75 50 L50 75 Z' fill='%23FF5900'/><circle cx='50' cy='50' r='12' fill='%23FFFFFF'/></svg>">
 
   <!-- Estilos y Design System Evertec -->
-  <link rel="stylesheet" href="/styles.css?v=20261002-1">
+  <link rel="stylesheet" href="/styles.css?v=20261002-2">
 
   <!-- Marcado Estructurado JSON-LD (Schema.org) - 12 Smartphones -->
   <script type="application/ld+json">
@@ -269,6 +269,7 @@
         <ul class="nav-list">
           <li><a href="#catalog-section" class="nav-link">Catálogo</a></li>
           <li><button type="button" id="nav-history-btn" class="nav-link nav-btn-link" onclick="openHistoryModal()" aria-label="Abrir modal de Historial">Historial</button></li>
+          <li><button type="button" id="test-cards-btn" class="nav-link nav-btn-link nav-btn-cards" onclick="openTestCardsModal()" aria-label="Abrir modal de Tarjetas de Prueba Sandbox">💳 Tarjetas Sandbox</button></li>
         </ul>
       </nav>
 
@@ -549,6 +550,137 @@
     </div>
   </div>
 
+  <!-- MODAL ACCESIBLE "TARJETAS DE PRUEBA SANDBOX" -->
+  <div id="test-cards-overlay" class="modal-overlay" hidden style="display: none;"></div>
+  <div id="test-cards-modal" class="modal-dialog modal-cards-dialog" role="dialog" aria-modal="true" aria-labelledby="test-cards-modal-title" hidden style="display: none;">
+    <div class="modal-header">
+      <div class="modal-title-group">
+        <h3 id="test-cards-modal-title" class="modal-title">💳 Tarjetas de Prueba Sandbox (Placetopay)</h3>
+        <span class="modal-subtitle">Utiliza estas tarjetas en la pasarela para simular todos los estados transaccionales</span>
+      </div>
+      <button id="close-cards-modal-btn" class="close-btn" onclick="closeTestCardsModal()" aria-label="Cerrar tarjetas de prueba">&times;</button>
+    </div>
+    <div class="modal-body modal-cards-body">
+      <div class="test-cards-notice">
+        <strong>💡 Instrucciones de Uso:</strong> En la pantalla de pago de Placetopay WebCheckout, utiliza cualquier fecha de vencimiento futura (ej. <strong>12/28</strong>) y cualquier código CVV (ej. <strong>123</strong>, o <strong>1234</strong> para Amex). Haz clic en <em>"Copiar"</em> para pegar el número directamente.
+      </div>
+
+      <!-- Categoría 1: Aprobadas -->
+      <div class="test-card-category">
+        <h4 class="category-title"><span class="badge-status-approved">APPROVED</span> Tarjetas para Pagos Aprobados (Frictionless / Sin Reto)</h4>
+        <div class="test-cards-grid">
+          <div class="test-card-box">
+            <div class="card-box-header">
+              <span class="card-brand">Visa (Aprobada)</span>
+              <span class="card-badge-mini badge-green">Aprobada 00</span>
+            </div>
+            <div class="card-number-row">
+              <code class="card-number-code">4111 1111 1111 1111</code>
+              <button type="button" class="btn-copy-card" onclick="copyCardNumber('4111111111111111', this)" aria-label="Copiar tarjeta Visa aprobada">Copiar</button>
+            </div>
+            <span class="card-helper">Aprobación instantánea sin reto 3DS</span>
+          </div>
+
+          <div class="test-card-box">
+            <div class="card-box-header">
+              <span class="card-brand">Mastercard (Aprobada)</span>
+              <span class="card-badge-mini badge-green">Aprobada 00</span>
+            </div>
+            <div class="card-number-row">
+              <code class="card-number-code">5180 3000 0000 0005</code>
+              <button type="button" class="btn-copy-card" onclick="copyCardNumber('5180300000000005', this)" aria-label="Copiar tarjeta Mastercard aprobada">Copiar</button>
+            </div>
+            <span class="card-helper">Aprobación estándar franquicia Mastercard</span>
+          </div>
+
+          <div class="test-card-box">
+            <div class="card-box-header">
+              <span class="card-brand">American Express (Aprobada)</span>
+              <span class="card-badge-mini badge-green">Aprobada 00</span>
+            </div>
+            <div class="card-number-row">
+              <code class="card-number-code">3435 7754 9670 001</code>
+              <button type="button" class="btn-copy-card" onclick="copyCardNumber('343577549670001', this)" aria-label="Copiar tarjeta Amex aprobada">Copiar</button>
+            </div>
+            <span class="card-helper">15 dígitos • CVV de 4 dígitos (ej. 1234)</span>
+          </div>
+
+          <div class="test-card-box">
+            <div class="card-box-header">
+              <span class="card-brand">Diners Club (Aprobada)</span>
+              <span class="card-badge-mini badge-green">Aprobada 00</span>
+            </div>
+            <div class="card-number-row">
+              <code class="card-number-code">3654 5400 0000 08</code>
+              <button type="button" class="btn-copy-card" onclick="copyCardNumber('36545400000008', this)" aria-label="Copiar tarjeta Diners aprobada">Copiar</button>
+            </div>
+            <span class="card-helper">14 dígitos • Aprobación franquicia Diners</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Categoría 2: Rechazadas Generales y Fondos Insuficientes -->
+      <div class="test-card-category">
+        <h4 class="category-title"><span class="badge-status-rejected">REJECTED</span> Tarjetas para Pagos Rechazados / Denegados</h4>
+        <div class="test-cards-grid">
+          <div class="test-card-box border-red">
+            <div class="card-box-header">
+              <span class="card-brand">Visa (Denegada / Fondos)</span>
+              <span class="card-badge-mini badge-red">Rechazada / XA</span>
+            </div>
+            <div class="card-number-row">
+              <code class="card-number-code">4110 7600 0000 0016</code>
+              <button type="button" class="btn-copy-card" onclick="copyCardNumber('4110760000000016', this)" aria-label="Copiar tarjeta Visa rechazada">Copiar</button>
+            </div>
+            <span class="card-helper">Rechazo por entidad financiera o fondos insuficientes</span>
+          </div>
+
+          <div class="test-card-box border-red">
+            <div class="card-box-header">
+              <span class="card-brand">Mastercard (Denegada)</span>
+              <span class="card-badge-mini badge-red">Rechazada 05</span>
+            </div>
+            <div class="card-number-row">
+              <code class="card-number-code">5180 3000 0000 0062</code>
+              <button type="button" class="btn-copy-card" onclick="copyCardNumber('5180300000000062', this)" aria-label="Copiar tarjeta Mastercard rechazada">Copiar</button>
+            </div>
+            <span class="card-helper">Rechazo bancario general emisor</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Categoría 3: 3D-Secure con Desafío (OTP) y Pendiente -->
+      <div class="test-card-category">
+        <h4 class="category-title"><span class="badge-status-pending">PENDING / 3DS</span> Autenticación con Reto (OTP) y Estados Asíncronos</h4>
+        <div class="test-cards-grid">
+          <div class="test-card-box border-blue">
+            <div class="card-box-header">
+              <span class="card-brand">Visa 3D-Secure (Challenge)</span>
+              <span class="card-badge-mini badge-blue">Reto OTP: 12345</span>
+            </div>
+            <div class="card-number-row">
+              <code class="card-number-code">4111 1111 1111 1111</code>
+              <button type="button" class="btn-copy-card" onclick="copyCardNumber('4111111111111111', this)" aria-label="Copiar tarjeta 3DS">Copiar</button>
+            </div>
+            <span class="card-helper">Al abrir pantalla de reto bancario, ingresar OTP: <strong>12345</strong></span>
+          </div>
+
+          <div class="test-card-box border-yellow">
+            <div class="card-box-header">
+              <span class="card-brand">Visa (Pendiente $\rightarrow$ En Proceso)</span>
+              <span class="card-badge-mini badge-yellow">PENDING</span>
+            </div>
+            <div class="card-number-row">
+              <code class="card-number-code">4048 3700 0000 0037</code>
+              <button type="button" class="btn-copy-card" onclick="copyCardNumber('4048370000000037', this)" aria-label="Copiar tarjeta pendiente">Copiar</button>
+            </div>
+            <span class="card-helper">Simula estado pendiente en validación asíncrona</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Footer Institucional -->
   <footer class="app-footer" role="contentinfo">
     <div class="footer-container">
@@ -564,6 +696,6 @@
   </footer>
 
   <!-- Lógica Reactiva Frontend -->
-  <script src="/app.js?v=20261002-1" defer></script>
+  <script src="/app.js?v=20261002-2" defer></script>
 </body>
 </html>

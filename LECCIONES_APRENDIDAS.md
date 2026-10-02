@@ -87,5 +87,16 @@ Este documento recopila las lecciones aprendidas, patrones arquitectónicos cons
   - *Contexto:* Al completar el pago en WebCheckout y ser redirigido de vuelta al comercio, los productos previamente seleccionados permanecían en el carrito si no se implementaba un mecanismo explícito de vaciado.
   - *Aprendizaje:* Vaciar el carrito (`cart.clearCart()`) inmediatamente antes de transferir al cliente hacia la pasarela bancaria y revalidar la limpieza ante la presencia del query parameter `?status=return` garantiza un nuevo inicio de compra limpio y transparente para el usuario.
 
+---
+
+## 9. Excelencia en Consultoría Técnica, Manejo de Crisis y Guía Sandbox (Spec-07)
+- **Lección 20: Desescalamiento Asertivo y Transición Pedagógica en Integraciones Complejas.**
+  - *Contexto:* Comercios en fase de integración enfrentan fricción técnica debido a la criptografía (`tranKey`) o desajustes de esquema JSON. Cuando la frustración escala a enojo o amenazas de cancelación (como en los casos Sunshine y clientes corporativos de alto valor), las justificaciones técnicas defensivas agravan la crisis.
+  - *Aprendizaje:* La combinación de empatía inmediata, desescalamiento emocional, asunción de responsabilidad institucional y un cambio radical de metodología hacia Pair Programming, colecciones de Postman interactivas y ejemplos mínimos ejecutables de código restablece la confianza del cliente y acelera la salida a producción.
+- **Lección 21: Experiencia del Evaluador (DX) Mediante Modales Accesibles de Tarjetas Sandbox.**
+  - *Contexto:* Al evaluar pasarelas en entornos sandbox, los evaluadores y desarrolladores pierden tiempo buscando tarjetas de prueba en la documentación externa para probar cada estado (aprobado, rechazado, fondos insuficientes, 3DS).
+  - *Aprendizaje:* Integrar un modal accesible (`#test-cards-modal`) directamente en la tienda virtual con copiado al portapapeles en 1 clic eleva drásticamente la Developer Experience (DX), facilitando una validación instantánea e intuitiva de todos los caminos transaccionales.
+
+
 
 
