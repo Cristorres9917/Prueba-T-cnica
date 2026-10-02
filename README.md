@@ -22,8 +22,7 @@ Construido bajo la metodología **Spec-Driven Development (SDD)** inspirada en l
 ### Instalación y Ejecución
 ```bash
 # 1. Clonar el repositorio
-git clone <URL_REPOSITORIO>
-cd "prueba tecnica"
+git clone https://github.com/Cristorres9917/Prueba-T-cnica.git
 
 # 2. Instalar dependencias con pnpm (sujeto a cuarentena de 48h de seguridad)
 pnpm install
@@ -44,13 +43,11 @@ La tienda virtual **Evertec PayShop** modela la venta de **12 smartphones de alt
 1. **Selección de Productos y Carrito Reactivo:**
    - Visualización uniforme en grid responsivo sin desbordes.
    - Drawer lateral accesible con conteo en tiempo real, cálculo de subtotales, IVA (19%) y total en COP.
-   - **Regla de Negocio:** El botón de pago se encuentra deshabilitado si el carrito está vacío.
 2. **Modal de Checkout Accesible:**
    - Al pulsar *"Ir a Pagar"*, se despliega el modal flotante (`#checkout-modal`) para capturar los datos esenciales del comprador (Nombre, Documento, Email, Teléfono celular y Dirección física).
    - El canal de pago es **100% WebCheckout transparente** por debajo (sin selectores confusos ni manipulación de tarjetas en el navegador).
 3. **Redirección Bancaria Segura:**
    - Al confirmar el pedido, el backend calcula la firma criptográfica `tranKey` y genera la sesión en el sandbox de Placetopay (`POST /api/session`), transfiriendo inmediatamente al pagador a `processUrl`.
-   - El carrito de compras se vacía automáticamente (`cart.clearCart()`) para un nuevo ciclo limpio.
 4. **Retorno Parametrizado y Sincronización Automática:**
    - La pasarela redirige al cliente a `http://localhost:3000/?status=return&reference=...`.
    - El frontend detecta el retorno, limpia el carrito y dispara la consulta de actualización (`/api/checkout/status/:requestId`).
@@ -87,6 +84,8 @@ Para realizar pruebas en el entorno de evaluación, utiliza las siguientes tarje
 
 ## 🏛️ 4. Arquitectura y Stack Tecnológico (Zero-Bloat)
 
+Se escogió el Webcheckout para no manejar datos sensibles de los clientes
+
 ```mermaid
 flowchart TD
     subgraph Frontend["Frontend (Vanilla JS ES6+ / CSS3)"]
@@ -112,14 +111,12 @@ flowchart TD
 
     subgraph Placetopay["Ecosistema Placetopay Sandbox (Evertec)"]
         WebCheckout["WebCheckout API (POST /api/session)"]
-        GatewayAPI["API Gateway REST (POST /gateway/process)"]
     end
 
     Frontend <--> Router
     Router --> AuthModule
     Router --> P2PService
     P2PService <--> WebCheckout
-    P2PService <--> GatewayAPI
     Router --> DBLayer
     DBLayer <--> Database
 ```
@@ -203,4 +200,20 @@ Contenido del documento:
 
 ---
 
-*Desarrollado con excelencia técnica por un candidato a Analista de Implementaciones Nivel 1 en Placetopay / Evertec.*
+## 📬 8. Pruebas de API en Postman y Evidencias Fotográficas
+
+El proyecto incluye la colección oficial de Postman lista para importar:
+👉 **[`postman_collection.json`](postman_collection.json)**
+
+Y la guía técnica humanizada con el análisis de cada endpoint y el registro fotográfico de 6 capturas en Sandbox:
+👉 **[`docs/soporte/guia-pruebas-postman-y-evidencias.md`](docs/soporte/guia-pruebas-postman-y-evidencias.md)**
+
+### Peticiones Incluidas:
+- **WebCheckout Sandbox:** Creación de sesión (`POST /api/session`) y consulta de estado (`POST /api/session/{{requestId}}`).
+- **API Gateway Sandbox:** Cobro directo aprobado (Visa 4111), cobro rechazado (Visa 4110), rechazo por fondos insuficientes (XA) y consulta por referencia interna (`POST /gateway/query`).
+- **Backend Local:** Creación y sincronización transaccional en SQLite (`http://localhost:3000`).
+
+Para ejecutar el test automatizado de verificación de la colección y evidencias:
+```bash
+pnpm run test:spec8
+```

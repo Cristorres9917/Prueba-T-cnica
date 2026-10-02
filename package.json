@@ -18,6 +18,7 @@
     "test:spec5": "node scripts/test-smartphones-checkout.mjs",
     "test:spec6": "node scripts/test-sync-receipt-ui.mjs",
     "test:spec7": "node scripts/test-documentation-and-support.mjs",
+    "test:spec8": "node scripts/test-postman-evidences.mjs",
     "start": "node src/server.js",
     "agentest": "node scripts/run-agentest.mjs",
     "test": "node scripts/run-agentest.mjs"
