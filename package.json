@@ -16,6 +16,7 @@
     "test:spec3": "node scripts/test-placetopay-contracts.mjs",
     "test:spec4": "node scripts/test-frontend-a11y-seo.mjs",
     "test:spec5": "node scripts/test-smartphones-checkout.mjs",
+    "test:spec6": "node scripts/test-sync-receipt-ui.mjs",
     "start": "node src/server.js",
     "agentest": "node scripts/run-agentest.mjs",
     "test": "node scripts/run-agentest.mjs"
